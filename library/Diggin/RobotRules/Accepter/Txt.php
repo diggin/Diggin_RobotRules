@@ -48,8 +48,8 @@ class Diggin_RobotRules_Accepter_Txt
         if(!isset($record['disallow'])) return false;
 
         foreach ($record['disallow'] as $line) {
-            $disallow = rawurlencode($line->getValue());
-            if (preg_match('#'.$disallow.'#', rawurlencode($path), $m)) {
+            $disallow = ($line->getValue());
+            if (preg_match('#'.$disallow.'#', ($path), $m)) {
                 //store reason
                 return true;
             }

@@ -22,7 +22,7 @@ class Diggin_RobotRules_Protocol_Txt_Line
                     $line, $match);
                     
         $line = new self;
-        $line->setField(strtolower($match[1]));
+        $line->setField(strtolower(trim($match[1])));
         $line->setValue($match[2]);
         $line->setComment($match[3]);
         
