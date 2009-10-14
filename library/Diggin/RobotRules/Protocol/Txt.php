@@ -14,19 +14,29 @@ class Diggin_RobotRules_Protocol_Txt implements Iterator
     
     protected function _toArray($robotstxt)
     {
-        
+        // normalize line
         $robotstxt = str_replace(chr(13).chr(10), chr(10), $robotstxt);
-        $robotstxt = str_replace(array(chr(10), chr(13)), PHP_EOL, $robotstxt);
 
-        $robotstxt = explode(PHP_EOL, $robotstxt);
+        // CRLF
+        //http://web.archive.org/web/20080702125527/http://www.robotstxt.org/norobots-rfc.txt
+        $robotstxt = str_replace(array(chr(10), chr(13)), chr(13).chr(10), $robotstxt);
+
+        $robotstxt = explode(chr(13).chr(10), $robotstxt);
 
         return $robotstxt;
     }
 
     protected function _getRobotsTxtArray()
     {
+        //init check
+        if (!preg_match('!\w:!m', $this->_robotstxtstring)) {
+            //require_once 'Diggin/RobotRules/Parser/Exception';
+            throw new Exception("Invalid format");
+        }
+
         if ($this->_robotstxt == '') {
-            $this->_robotstxt = $this->_toArray($this->_robotstxtstring);
+            $robotstxt = $this->_toArray($this->_robotstxtstring);
+            $this->_robotstxt = $robotstxt;
         }
 
         return $this->_robotstxt;

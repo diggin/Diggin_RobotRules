@@ -9,20 +9,14 @@ class Diggin_RobotRules_Accepter_Txt
     private $_protocol;
     /** string or Zend_Http_Client */
     private $_useragent;
-    /** Zend_Uri */
-    private $_uri;
-
 
     public function isAllow($uri = null)
     {
         if (is_string($uri)) {
-            $uri = Zend_Uri::factory($uri);
+            ////if (!@parse_url) $path =
+            $path = Zend_Uri::factory($uri)->getPath();
         } elseif (!$uri and ($this->_useragent instanceof Zend_Http_Client)) {
-            $uri = $this->_useragent->getUri();
-        }
-
-        if (!($uri instanceof Zend_Uri_Http)) {
-            throw new Exception();
+            $path = $this->_useragent->getUri()->getPath();
         }
 
         if (!$this->_protocol) {
@@ -31,28 +25,46 @@ class Diggin_RobotRules_Accepter_Txt
 
         foreach ($this->_protocol as $record) {
 
+            //record has some user-agents
+            $useragents = $record['user-agent'];
+
+            //array_walk($useragents, create_function('$v, $k', '$v->getValue();'));
+            foreach ($useragents as &$u) $u = $u->getValue(); unset($u);
+
+            if ( (!in_array($this->_useragent, $useragents)) and
+                  (!in_array('*', $useragents))) continue;         
+
             //match
-            foreach($record['user-agent'] as $ua) {
-                if (($this->_useragent === $ua->getValue()) or 
-                    ('*' === $ua->getValue()) ) {
-                    
-                    if ($this->_isDisallow($record, $uri)) {
-                        return false;
-                    }
-                }
+            if ($this->_matchDisallow($record, $path)) {
+                return false;
             }
         }
 
         return true;
     }
 
-    protected function _isDisallow($record, Zend_Uri $uri)
+    protected function _matchDisallow($record, $path)
     {
+        if(!isset($record['disallow'])) return false;
+
         foreach ($record['disallow'] as $line) {
-            $path = $line->getValue();
-            if (preg_match('#'.$path.'#', 
-                           $uri->getPath(), $m)) {
-                var_dump((string)$uri, $m);
+            $disallow = rawurlencode($line->getValue());
+            if (preg_match('#'.$disallow.'#', rawurlencode($path), $m)) {
+                //store reason
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function _matchAllow($record, $path)
+    {
+        if(!isset($record['allow'])) return false;
+
+        foreach ($record['allow'] as $line) {
+            $allow = $line->getValue();
+            if (preg_match('#'.$allow.'#', $path, $m)) {
                 return true;
             }
         }
@@ -69,22 +81,8 @@ class Diggin_RobotRules_Accepter_Txt
         $this->_protocol = $protocol;
     }
 
-    //set target
-    public function setUri($url)
-    {
-        if (is_string($url)) {
-            $url = Zend_Uri::factory($url);
-        }
-
-        //if (!instanceof)
-
-        $this->_uri = $url;
-    }
-
     public function setUserAgent($useragent)
     {
         $this->_useragent = $useragent;
     }
-    
-
 }
