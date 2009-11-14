@@ -11,6 +11,12 @@ Disallow:
 User-Agent: Googlebot
 Disallow: /cgi-bin/
 Disallow: /*.gif$
+EOF;
+
+$robots = <<<EOF
+User-Agent: Testbot
+Disallow : /cgi-bin/
+Disallow : /*.gif$
 
 User-agent: *
 Disallow: /     
@@ -24,9 +30,7 @@ $robots = new Diggin_RobotRules_Protocol_Txt($robots);
 
 foreach ($robots as $key => $record)
 {
-    echo 111;
     var_dump($record);
-    //var_dump($record);
 }
 
 
