@@ -43,19 +43,39 @@ class Diggin_RobotRules_Accepter_Txt
         return true;
     }
 
-    protected function _matchDisallow($record, $path)
+    protected function _matchDisallow(Diggin_RobotRules_Protocol_Txt_Record $record, $path)
     {
         if(!isset($record['disallow'])) return false;
 
         foreach ($record['disallow'] as $line) {
-            $disallow = ($line->getValue());
-            if (preg_match('#'.$disallow.'#', ($path), $m)) {
-                //store reason
-                return true;
+            $disallow = $line->getValue();
+            
+            $dis = explode('/', $disallow);
+            $paths = explode('/', $path);
+
+            if (count($dis) > count($paths)) return false;
+
+            //todoo, cut space-only
+
+            foreach ($dis as $k => $v) {
+                if (count($paths) === $k) {
+                    break;
+                }
+                //$v = (stripos($v, '%') === false) ? rawurlencode($v) : $v;
+                //if (version_compare(PHP_VERSION, '5.3.0') >= 0) $v = str_replace('~', '%7E', $v);
+                $v = (stripos($v, '%') === false) ? urlencode($v) : $v;
+
+                //$p = (stripos($paths[$k], '%') === false) ? rawurlencode($paths[$k]): $paths[$k];
+                //if (version_compare(PHP_VERSION, '5.3.0') >= 0) $p = str_replace('~', '%7E', $p);
+                $p = (stripos($paths[$k], '%') === false) ? urlencode($paths[$k]): $paths[$k];
+
+                if (!(preg_match('#'.$v.'#i', $p) > 0)) {
+                    return false;
+                }
             }
         }
 
-        return false;
+        return true;
     }
 
     protected function _matchAllow($record, $path)
