@@ -16,10 +16,10 @@ Allow : /org/
 Allow : /serv
 Allow : /~mark
 
-User-agent: *
-#DisAllow : /%7emark
-DisAllow : /%7amark
-#Allow : /
+User-agent: baidu
+Disallow: /%7Emark
+DisAllow: /~mark
+DisAllow: /aaa
 
 EOF;
 
