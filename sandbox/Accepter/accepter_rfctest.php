@@ -2,7 +2,7 @@
 set_include_path(dirname(__FILE__) . '/../../library' . PATH_SEPARATOR . get_include_path());
 
 // Record Path URL path Matches
-$txt = <<<EOF
+$txt = <<<'EOF'
 /tmp /tmp yes
 /tmp /tmp.html yes
 /tmp /tmp/a.html yes
@@ -21,21 +21,34 @@ $txt = <<<EOF
 /~joe/index.html /%7Ejoe/index.html yes
 EOF;
 
-$txts = explode("\n", $txt);
+require_once 'Zend/Loader/Autoloader.php';
+Zend_Loader_Autoloader::getInstance()->setFallbackAutoloader(true);
 
+class TestAccepter extends Diggin_RobotRules_Accepter_Txt
+{
+    function matchDisallow($v, $t)
+    {
+        $line = new Diggin_RobotRules_Protocol_Txt_Line;
+        $line->setField('disallow');
+        $line->setValue($v);
 
+        $record = new Diggin_RobotRules_Protocol_Txt_Record;
+        $record->append($line);
+
+        return $this->_matchDisallow($record, $t);
+    }
+}
 
 require_once 'Zend/Loader/Autoloader.php';
 Zend_Loader_Autoloader::getInstance()->setFallbackAutoloader(true);
 
-$accepter = new Diggin_RobotRules_Accepter_Txt(); 
+$accepter = new TestAccepter(); 
 $accepter->setUserAgent('Googlebot');
-//$accepter->setProtocol(new Diggin_RobotRules_Protocol_Txt($txt));
+$txts = explode("\n", $txt);
 foreach ($txts as $t) {
     $path = explode(" ", $t);
     echo $t, PHP_EOL;
-    print_r();
 
-
-    var_dump($accepter->matchDisallow($path[1], $path[2]));
+    var_dump($accepter->matchDisallow($path[0], $path[1]));
 }
+
