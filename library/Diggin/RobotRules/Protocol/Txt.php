@@ -29,7 +29,7 @@ class Diggin_RobotRules_Protocol_Txt implements Iterator
     protected function _getRobotsTxtArray()
     {
         //init check
-        if (!preg_match('!\w:!m', $this->_robotstxtstring)) {
+        if (!preg_match('!\w\s*:!m', $this->_robotstxtstring)) {
             //require_once 'Diggin/RobotRules/Parser/Exception';
             throw new Exception("Invalid format");
         }
@@ -56,7 +56,7 @@ class Diggin_RobotRules_Protocol_Txt implements Iterator
             $ra = $this->_getRobotsTxtArray();
             $record->append(Diggin_RobotRules_Protocol_Txt_Line::parse($ra[$this->_line]));
             $this->_line++; 
-        } while (preg_match('!\w:!', $this->_robotstxt[$this->_line])); 
+        } while (preg_match('!\w\s*:!', $this->_robotstxt[$this->_line])); 
         
         return $record;
     }
