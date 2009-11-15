@@ -35,12 +35,9 @@ class TestAccepter extends Diggin_RobotRules_Accepter_Txt
         $record = new Diggin_RobotRules_Protocol_Txt_Record;
         $record->append($line);
 
-        return $this->_matchDisallow($record, $t);
+        return $this->_matchCheck('disallow',$record, $t);
     }
 }
-
-require_once 'Zend/Loader/Autoloader.php';
-Zend_Loader_Autoloader::getInstance()->setFallbackAutoloader(true);
 
 $accepter = new TestAccepter(); 
 $accepter->setUserAgent('Googlebot');
