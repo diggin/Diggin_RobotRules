@@ -39,7 +39,7 @@ class Diggin_RobotRules_Accepter_Txt
                 //var_dump('--', $d);
                 if ($a = $this->_matchCheck('allow', $record, $path)) {
                     //var_dump($d, $a);
-                    if (($d === true)? 1 : $d  >= $a) {
+                    if (($d === true) ? 1 : $d  >= $a) {
                         return false;
                     }
                     return true;
@@ -65,7 +65,10 @@ class Diggin_RobotRules_Accepter_Txt
             $value = $line->getValue();
 
             if ($value === '/') {
-                $flag = ($flag !== true)? $flag : 1; 
+                $flag = ($flag !== true) ? $flag : true; 
+                //$flag = 1; 
+                //$flag = ($flag !== false and $flag !== 1) ? $flag : 1; 
+                //var_dump("aa", $flag);
                 continue;
             }
             

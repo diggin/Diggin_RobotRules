@@ -25,31 +25,39 @@ EOF;
 //                                               unhipbot webcrawler other
 //                                                        & excite
 $check = <<<'EOF'
-     http://www.fict.org/                         No       Yes       No
-     http://www.fict.org/index.html               No       Yes       No
-     http://www.fict.org/robots.txt               Yes      Yes       Yes
-     http://www.fict.org/server.html              No       Yes       Yes
-     http://www.fict.org/services/fast.html       No       Yes       Yes
-     http://www.fict.org/services/slow.html       No       Yes       Yes
-     http://www.fict.org/orgo.gif                 No       Yes       No
-     http://www.fict.org/org/about.html           No       Yes       Yes
-     http://www.fict.org/org/plans.html           No       Yes       No
-     http://www.fict.org/%7Ejim/jim.html          No       Yes       No
-     http://www.fict.org/%7Emak/mak.html          No       Yes       Yes
+http://www.fict.org/                         No       Yes       No
+http://www.fict.org/index.html               No       Yes       No
+http://www.fict.org/robots.txt               Yes      Yes       Yes
+http://www.fict.org/server.html              No       Yes       Yes
+http://www.fict.org/services/fast.html       No       Yes       Yes
+http://www.fict.org/services/slow.html       No       Yes       Yes
+http://www.fict.org/orgo.gif                 No       Yes       No
+http://www.fict.org/org/about.html           No       Yes       Yes
+http://www.fict.org/org/plans.html           No       Yes       No
+http://www.fict.org/%7Ejim/jim.html          No       Yes       No
+http://www.fict.org/%7Emak/mak.html          No       Yes       Yes
 EOF;
 
 require_once 'Zend/Loader/Autoloader.php';
 Zend_Loader_Autoloader::getInstance()->setFallbackAutoloader(true);
 
 $accepter = new Diggin_RobotRules_Accepter_Txt(); 
-$accepter->setUserAgent('Googlebot');
+//$accepter->setUserAgent('Googlebot');
 //$accepter->setUserAgent('unhipbot');
 $accepter->setProtocol($protocol = new Diggin_RobotRules_Protocol_Txt($txt));
-//    foreach($protocol as $p) print_r($p);
-$ret1 = $accepter->isAllow('http://www.fict.org/index.html');
-$ret2 = $accepter->isAllow('http://www.fict.org/org/about.html');
-$ret3 = $accepter->isAllow('http://www.fict.org/disa/about.html');
-$ret4 = $accepter->isAllow('http://www.fict.org/org/plans.html');
-$ret5 = $accepter->isAllow('http://www.fict.org/~mak/mak.html');
-var_dump($ret1, $ret2, $ret3, $ret4, $ret5);
+$checks = explode("\n", $check);
+foreach ($checks as $c) {
+    $s = preg_split('/ +/', $c);
 
+    echo $s[0], PHP_EOL;
+    $accepter->setUserAgent('unhipbot');
+goto case3;
+
+    echo $s[1], ' '; var_dump($accepter->isAllow($s[0]));
+    $accepter->setUserAgent('webcrawler');
+    echo $s[2], ' '; var_dump($accepter->isAllow($s[0]));
+case3:
+    $accepter->setUserAgent('otherbot');
+    echo $s[3], ' '; var_dump($accepter->isAllow($s[0]));
+
+}
