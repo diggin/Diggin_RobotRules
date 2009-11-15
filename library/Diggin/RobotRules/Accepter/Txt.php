@@ -27,6 +27,7 @@ class Diggin_RobotRules_Accepter_Txt
 
             //record has some user-agents
             $useragents = $record['user-agent'];
+            //print_r($record);
 
             //array_walk($useragents, create_function('$v, $k', '$v->getValue();'));
             foreach ($useragents as &$u) $u = $u->getValue(); unset($u);
@@ -34,8 +35,9 @@ class Diggin_RobotRules_Accepter_Txt
             if ( (!in_array($this->_useragent, $useragents)) and
                   (!in_array('*', $useragents))) continue;         
 
-            //match
-            if ($this->_matchDisallow($record, $path)) {
+            //match check
+            if ($this->_matchCheck('disallow', $record, $path) and 
+                !($this->_matchCheck('allow', $record, $path))) {
                 return false;
             }
         }
@@ -43,11 +45,11 @@ class Diggin_RobotRules_Accepter_Txt
         return true;
     }
 
-    protected function _matchDisallow(Diggin_RobotRules_Protocol_Txt_Record $record, $path)
+    protected function _matchCheck($field, Diggin_RobotRules_Protocol_Txt_Record $record, $path)
     {
-        if(!isset($record['disallow'])) return false;
+        if(!isset($record[$field])) return false;
 
-        foreach ($record['disallow'] as $line) {
+        foreach ($record[$field] as $line) {
             $disallow = $line->getValue();
             
             $dis = explode('/', $disallow);
@@ -61,21 +63,18 @@ class Diggin_RobotRules_Accepter_Txt
                 if (count($paths) === $k) {
                     break;
                 }
-                //$v = (stripos($v, '%') === false) ? rawurlencode($v) : $v;
-                //if (version_compare(PHP_VERSION, '5.3.0') >= 0) $v = str_replace('~', '%7E', $v);
-                $v = (stripos($v, '%') === false) ? urlencode($v) : $v;
 
-                //$p = (stripos($paths[$k], '%') === false) ? rawurlencode($paths[$k]): $paths[$k];
-                //if (version_compare(PHP_VERSION, '5.3.0') >= 0) $p = str_replace('~', '%7E', $p);
+                // check is_encoded path (not strict..)
+                $v = (stripos($v, '%') === false) ? urlencode($v) : $v;
                 $p = (stripos($paths[$k], '%') === false) ? urlencode($paths[$k]): $paths[$k];
 
-                if (!(preg_match('#'.$v.'#i', $p) > 0)) {
-                    return false;
+                if (preg_match('#'.$v.'#i', $p) > 0) {
+                    return true;
                 }
             }
         }
 
-        return true;
+        return false;
     }
 
     protected function _matchAllow($record, $path)
