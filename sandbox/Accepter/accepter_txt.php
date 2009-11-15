@@ -23,9 +23,6 @@ DisAllow: /aaa
 
 EOF;
 
-
-
-
 require_once 'Zend/Loader/Autoloader.php';
 Zend_Loader_Autoloader::getInstance()->setFallbackAutoloader(true);
 
@@ -34,10 +31,8 @@ $accepter->setUserAgent('Googlebot');
 $accepter->setProtocol(new Diggin_RobotRules_Protocol_Txt($txt));
 
 var_dump($accepter->isAllow('http://test.org/cgi-bin/test.cgi')); //boolean
-
         echo '----------------isAllow?---------', PHP_EOL;
 var_dump($accepter->isAllow('http://test.org/test.html')); //boolean
-
         echo '----------------isAllow---------', PHP_EOL;
 $accepter->setUserAgent('baidu');
 var_dump($accepter->isAllow('http://test.org/org/plans.html')); //boolean
