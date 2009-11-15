@@ -51,12 +51,11 @@ class Diggin_RobotRules_Protocol_Txt implements Iterator
         // はgetRecordされたときにおこなう
         $record = new Diggin_RobotRules_Protocol_Txt_Record;
         do {
-            //$record[] = Diggin_RobotRules_Protocol_Txt_Line::parse($this->_robotstxt[$this->_line]);
-            //$this->_getRobotsTxtArray()->{$this->_line};
             $ra = $this->_getRobotsTxtArray();
             $record->append(Diggin_RobotRules_Protocol_Txt_Line::parse($ra[$this->_line]));
-            $this->_line++; 
-        } while (preg_match('!\w\s*:!', $this->_robotstxt[$this->_line])); 
+            $this->_line++;
+        } while (isset($this->_robotstxt[$this->_line]) and
+                 preg_match('!\w\s*:!', $this->_robotstxt[$this->_line])); 
         
         return $record;
     }
