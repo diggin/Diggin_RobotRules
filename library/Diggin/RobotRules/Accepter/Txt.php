@@ -27,18 +27,29 @@ class Diggin_RobotRules_Accepter_Txt
 
             //record has some user-agents
             $useragents = $record['user-agent'];
-            //print_r($record);
 
-            //array_walk($useragents, create_function('$v, $k', '$v->getValue();'));
             foreach ($useragents as &$u) $u = $u->getValue(); unset($u);
 
             if ( (!in_array($this->_useragent, $useragents)) and
                   (!in_array('*', $useragents))) continue;         
 
+            //if ($this->_matchCheck('disallow', $record, $path)) var_dump($record['disallow'], $path);
             //match check
-            if ($this->_matchCheck('disallow', $record, $path) and 
-                !($this->_matchCheck('allow', $record, $path))) {
-                return false;
+            if ($d = $this->_matchCheck('disallow', $record, $path)) {
+                //var_dump('--', $d);
+                if ($a = $this->_matchCheck('allow', $record, $path)) {
+                    //var_dump($d, $a);
+                    if (($d === true)? 1 : $d  >= $a) {
+                        return false;
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                if ($this->_matchCheck('allow', $record, $path)) {
+                    return true;
+                }
             }
         }
 
@@ -49,18 +60,27 @@ class Diggin_RobotRules_Accepter_Txt
     {
         if(!isset($record[$field])) return false;
 
+        $flag = false;
         foreach ($record[$field] as $line) {
-            $disallow = $line->getValue();
+            $value = $line->getValue();
+
+            if ($value === '/') {
+                $flag = ($flag !== true)? $flag : 1; 
+                continue;
+            }
             
-            $dis = explode('/', $disallow);
+            $vals = explode('/', $value);
             $paths = explode('/', $path);
 
-            if (count($dis) > count($paths)) return false;
+            if (count($vals) > count($paths)) {
+                $flag = false; continue;
+            }
 
-            //todoo, cut space-only
+            $vals = array_filter($vals);
+            $paths = array_filter($paths);
 
-            foreach ($dis as $k => $v) {
-                if (count($paths) === $k) {
+            foreach ($vals as $k => $v) {
+                if (!isset($paths[$k])) {
                     break;
                 }
 
@@ -69,26 +89,15 @@ class Diggin_RobotRules_Accepter_Txt
                 $p = (stripos($paths[$k], '%') === false) ? urlencode($paths[$k]): $paths[$k];
 
                 if (preg_match('#'.$v.'#i', $p) > 0) {
-                    return true;
+                    //$flag = true;
+                    $flag = ((int)$flag < count($vals))? count($vals): $flag;
+                } else {
+                    $flag = false;
                 }
             }
         }
 
-        return false;
-    }
-
-    protected function _matchAllow($record, $path)
-    {
-        if(!isset($record['allow'])) return false;
-
-        foreach ($record['allow'] as $line) {
-            $allow = $line->getValue();
-            if (preg_match('#'.$allow.'#', $path, $m)) {
-                return true;
-            }
-        }
-
-        return false;
+        return $flag;
     }
 
     public function setProtocol($protocol)

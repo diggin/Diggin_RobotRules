@@ -21,7 +21,6 @@ class Diggin_RobotRules_Protocol_Txt_Record implements ArrayAccess
     {
         //@todo not strtowloer,CamelUppder
         
-        //var_dump($offset, $this->_fields, array_key_exists(strtolower($offset), $this->_fields));
         if (array_key_exists(strtolower($offset), $this->_fields)) {
             return $this->_fields[strtolower($offset)];
         } else {
@@ -42,7 +41,7 @@ class Diggin_RobotRules_Protocol_Txt_Record implements ArrayAccess
     public function append(Diggin_RobotRules_Protocol_Txt_line $line)
     {
         if (array_key_exists($field = $line->getField(), $this->_fields)) {
-            $this->_fields[$field][count($field)] = $line;
+            $this->_fields[$field][count($this->_fields[$field])] = $line;
         } else {
             $this->_fields[$field][0] = $line;
         }
