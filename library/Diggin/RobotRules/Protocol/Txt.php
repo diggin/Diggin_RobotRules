@@ -1,6 +1,8 @@
 <?php
 class Diggin_RobotRules_Protocol_Txt implements Iterator
 {
+    const ACCEPTER_KEY = 'Txt';
+
     private $_robotstxtstring = '';
     private $_robotstxt = '';
     private $_line = 0;

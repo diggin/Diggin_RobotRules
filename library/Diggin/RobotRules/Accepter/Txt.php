@@ -1,5 +1,4 @@
 <?php
-require_once 'Zend/Uri.php';
 
 class Diggin_RobotRules_Accepter_Txt 
     implements Diggin_RobotRules_Accepter_AccepterInterface
@@ -10,9 +9,12 @@ class Diggin_RobotRules_Accepter_Txt
     /** string or Zend_Http_Client */
     private $_useragent;
 
+    private $_reason;
+
     public function isAllow($uri = null)
     {
         if (is_string($uri)) {
+            require_once 'Zend/Uri.php';
             ////if (!@parse_url) $path =
             $path = Zend_Uri::factory($uri)->getPath();
         } elseif (!$uri and ($this->_useragent instanceof Zend_Http_Client)) {
@@ -33,13 +35,10 @@ class Diggin_RobotRules_Accepter_Txt
             if ( (!in_array($this->_useragent, $useragents)) and
                   (!in_array('*', $useragents))) continue;         
 
-            //if ($this->_matchCheck('disallow', $record, $path)) var_dump($record['disallow'], $path);
             //match check
             if ($d = $this->_matchCheck('disallow', $record, $path)) {
-                //var_dump('--', $d);
                 if ($a = $this->_matchCheck('allow', $record, $path)) {
-                    //var_dump($d, $a);
-                    if (($d === true) ? 1 : $d  >= $a) {
+                    if ((count($d) > count($a))) {
                         return false;
                     }
                     return true;
@@ -51,24 +50,43 @@ class Diggin_RobotRules_Accepter_Txt
                     return true;
                 }
             }
+            
+            break;
         }
 
         return true;
     }
-
+    
+    private function _sort($a, $b)
+    {
+        if (count($a) == count($b)) {
+            return 0;
+        }
+        return (count($a) < count($b)) ? -1 : 1;
+    }
+    
     protected function _matchCheck($field, Diggin_RobotRules_Protocol_Txt_Record $record, $path)
     {
-        if(!isset($record[$field])) return false;
+        if ($path == '/robots.txt') {
+            return (boolean) !($field == 'disallow');
+        }
+        
+        if (!isset($record[$field])) return false;
+        
+        $flag = array();
+        
+        $recfield = $record[$field];
+        usort($recfield, array($this, '_sort'));
 
-        $flag = false;
-        foreach ($record[$field] as $line) {
+        foreach ($recfield as $line) {
             $value = $line->getValue();
+            
+            if (trim($value) === '' && $field == 'disallow') {
+                return array();
+            }
 
             if ($value === '/') {
-                $flag = ($flag !== true) ? $flag : true; 
-                //$flag = 1; 
-                //$flag = ($flag !== false and $flag !== 1) ? $flag : 1; 
-                //var_dump("aa", $flag);
+                $flag = array('/');
                 continue;
             }
             
@@ -76,7 +94,8 @@ class Diggin_RobotRules_Accepter_Txt
             $paths = explode('/', $path);
 
             if (count($vals) > count($paths)) {
-                $flag = false; continue;
+                $flag = ($flag) ? $flag : array(); 
+                continue;
             }
 
             $vals = array_filter($vals);
@@ -92,10 +111,14 @@ class Diggin_RobotRules_Accepter_Txt
                 $p = (stripos($paths[$k], '%') === false) ? urlencode($paths[$k]): $paths[$k];
 
                 if (preg_match('#'.$v.'#i', $p) > 0) {
-                    //$flag = true;
-                    $flag = ((int)$flag < count($vals))? count($vals): $flag;
+                       
+                    if (count(array_diff_assoc($vals, $paths)) == 0) {
+                        $flag = $vals;
+                    } else {
+                        if (!$flag) $flag = $vals;
+                    }
                 } else {
-                    $flag = false;
+                   if (count($flag) >= 1 and (count(array_diff_assoc($vals, $paths)) == 0)) $flag = $vals;
                 }
             }
         }
