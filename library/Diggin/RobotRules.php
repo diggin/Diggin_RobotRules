@@ -19,14 +19,14 @@ class Diggin_RobotRules
 //        return null;
 //    }
 
-	protected $config = array(
-	   'accepter' => 'a'
-	);
-	
+    protected $config = array(
+       'accepter' => 'a'
+    );
+    
     public function __construct(Zend_Config $config)
     {
     }
 
-	
+
 //    public function setAccepter();
 }

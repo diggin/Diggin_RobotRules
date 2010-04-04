@@ -17,9 +17,14 @@ class Diggin_RobotRules_Accepter_Txt
             require_once 'Zend/Uri.php';
             ////if (!@parse_url) $path =
             $path = Zend_Uri::factory($uri)->getPath();
-        } elseif (!$uri and ($this->_useragent instanceof Zend_Http_Client)) {
-            $path = $this->_useragent->getUri()->getPath();
-        }
+        } elseif (null === $uri) {
+            if ($this->_useragent instanceof Zend_Http_Client) {
+                $path = $this->_useragent->getUri()->getPath();
+            } else {
+                throw new Exception('$uri is not set');
+            }
+        } 
+
 
         if (!$this->_protocol) {
             throw new Exception();
@@ -129,6 +134,7 @@ class Diggin_RobotRules_Accepter_Txt
     public function setProtocol($protocol)
     {
         if (!($protocol instanceof Diggin_RobotRules_Protocol_Txt)) {
+            require_once 'Diggin/RobotRules/Accepter/Exception.php';
             throw new Exception();
         }
 
