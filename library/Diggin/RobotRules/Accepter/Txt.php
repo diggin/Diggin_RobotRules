@@ -13,10 +13,16 @@ class Diggin_RobotRules_Accepter_Txt
 
     public function isAllow($uri = null)
     {
-        if (is_string($uri)) {
-            require_once 'Zend/Uri.php';
-            ////if (!@parse_url) $path =
-            $path = Zend_Uri::factory($uri)->getPath();
+        if ($uri instanceof Zend_Uri_Http) {
+            $path = $uri->getPath();
+        } else if (is_string($uri)) {
+            if (preg_match('#^http#', $uri)) {
+                require_once 'Zend/Uri.php';
+                ////if (!@parse_url) $path =
+                $path = Zend_Uri::factory($uri)->getPath();
+            } else {
+                $path = $uri;
+            }
         } elseif (null === $uri) {
             if ($this->_useragent instanceof Zend_Http_Client) {
                 $path = $this->_useragent->getUri()->getPath();
