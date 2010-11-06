@@ -22,6 +22,7 @@ class Diggin_RobotRules_Accepter_Txt
                 $path = Zend_Uri::factory($uri)->getPath();
             } else {
                 $path = $uri;
+                //$path = trim($uri, '/');
             }
         } elseif (null === $uri) {
             if ($this->_useragent instanceof Zend_Http_Client) {
@@ -36,7 +37,7 @@ class Diggin_RobotRules_Accepter_Txt
             throw new Exception();
         }
 
-        foreach ($this->_protocol as $record) {
+        foreach ($this->_protocol as $k => $record) {
 
             //record has some user-agents
             $useragents = $record['user-agent'];
@@ -49,7 +50,7 @@ class Diggin_RobotRules_Accepter_Txt
             //match check
             if ($d = $this->_matchCheck('disallow', $record, $path)) {
                 if ($a = $this->_matchCheck('allow', $record, $path)) {
-                    if ((count($d) > count($a))) {
+                    if (strlen($d) > strlen($a)) {
                         return false;
                     }
                     return true;
@@ -61,7 +62,7 @@ class Diggin_RobotRules_Accepter_Txt
                     return true;
                 }
             }
-            
+
             break;
         }
 
@@ -84,53 +85,28 @@ class Diggin_RobotRules_Accepter_Txt
         
         if (!isset($record[$field])) return false;
         
-        $flag = array();
+        $flag = false;
         
         $recfield = $record[$field];
         usort($recfield, array($this, '_sort'));
 
+        $localdebug = false;
+
         foreach ($recfield as $line) {
             $value = $line->getValue();
-            
-            if (trim($value) === '' && $field == 'disallow') {
-                return array();
-            }
 
+            if ($value === '') continue;
+            
             if ($value === '/') {
-                $flag = array('/');
-                continue;
+                if ($path === '/') return true;
+                //continue;
             }
             
-            $vals = explode('/', $value);
-            $paths = explode('/', $path);
+            $value = urldecode($value);
+            $path = urldecode($path);
 
-            if (count($vals) > count($paths)) {
-                $flag = ($flag) ? $flag : array(); 
-                continue;
-            }
-
-            $vals = array_filter($vals);
-            $paths = array_filter($paths);
-
-            foreach ($vals as $k => $v) {
-                if (!isset($paths[$k])) {
-                    break;
-                }
-
-                // check is_encoded path (not strict..)
-                $v = (stripos($v, '%') === false) ? urlencode($v) : $v;
-                $p = (stripos($paths[$k], '%') === false) ? urlencode($paths[$k]): $paths[$k];
-
-                if (preg_match('#'.$v.'#i', $p) > 0) {
-                       
-                    if (count(array_diff_assoc($vals, $paths)) == 0) {
-                        $flag = $vals;
-                    } else {
-                        if (!$flag) $flag = $vals;
-                    }
-                } else {
-                   if (count($flag) >= 1 and (count(array_diff_assoc($vals, $paths)) == 0)) $flag = $vals;
-                }
+            if (preg_match('#^'. preg_quote($value) . '#', $path)) {
+                $flag = $value;
             }
         }
 

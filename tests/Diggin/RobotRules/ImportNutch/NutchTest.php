@@ -9,7 +9,7 @@ require_once 'Zend/Loader/Autoloader.php';
 //Zend_Loader_Autoloader::getInstance()->setFallbackAutoloader(true);
 Zend_Loader_Autoloader::getInstance()->registerNamespace('Diggin_');
 
-
+//@see plugin/lib-http/src/test/org/apache/nutch/protocol/http/api TestRobotRulesParser
 class Digggin_RobotRules_ImportNutch_NutchTest extends PHPUnit_Framework_TestCase
 {
 
@@ -18,18 +18,23 @@ class Digggin_RobotRules_ImportNutch_NutchTest extends PHPUnit_Framework_TestCas
         $accepter = new Diggin_RobotRules_Accepter_Txt;
 
         $robotstxt = $this->_getRobotsStrings();
-        $accepter->setProtocol(new Diggin_RobotRules_Protocol_Txt($robotstxt[0]));
-        
-        $agent = $this->_agents[0];
-        $accepter->setUserAgent($agent);
+        $accepter->setProtocol($protocol = new Diggin_RobotRules_Protocol_Txt($robotstxt[0]));
+
         $allowed = $this->_getAllowed();
-        $allowed0 = current(array_shift($allowed));
-        foreach($this->_testPaths as $key => $path) {
-            var_dump($path);
-            var_dump($allowed0[$key]);
-            
-            var_dump($accepter->isAllow($path));
-            //$this->
+
+        foreach ($this->_agents as $agent) {
+            $accepter->setUserAgent($agent);
+            foreach($this->_testPaths as $key => $path) {
+                $this->assertTrue($allowed[0][$agent][$key] === $accepter->isAllow($path));
+            }
+        }
+
+        $accepter->setProtocol($protocol = new Diggin_RobotRules_Protocol_Txt($robotstxt[1]));
+        foreach ($this->_agents as $agent) {
+            $accepter->setUserAgent($agent);
+            foreach($this->_testPaths as $key => $path) {
+                $this->assertTrue($allowed[1][$agent][$key] === $accepter->isAllow($path));
+            }
         }
     }
     
@@ -73,7 +78,7 @@ class Digggin_RobotRules_ImportNutch_NutchTest extends PHPUnit_Framework_TestCas
    private function _getRobotsStrings()
    {
        return array(
-       "User-Agent: Agent1 #foo" . self::CR
+         "User-Agent: Agent1 #foo" . self::CR
        . "Disallow: /a" . self::CR
        . "Disallow: /b/a" . self::CR
        . "#Disallow: /c" . self::CR
@@ -86,7 +91,7 @@ class Digggin_RobotRules_ImportNutch_NutchTest extends PHPUnit_Framework_TestCas
        . "" . self::CR
        . "User-Agent: *" . self::CR
        . "Disallow: /foo/bar/" . self::CR,
-       null  // Used to test EMPTY_RULES
+       '',//null  // Used to test EMPTY_RULES
       );
    }
 
@@ -142,6 +147,7 @@ class Digggin_RobotRules_ImportNutch_NutchTest extends PHPUnit_Framework_TestCas
     return    array(
  array(
    // ROBOTS_STRINGS[0]
+   'Agent1' =>
    array( // Agent1
        false,  // "/a",
        false,  // "/a/",
@@ -164,6 +170,7 @@ class Digggin_RobotRules_ImportNutch_NutchTest extends PHPUnit_Framework_TestCas
        true,   // "/foo/bar.html",
        true,   // "/f/",
      ),
+   'Agent2' =>
    array( // Agent2
        true,   // "/a",
        true,   // "/a/",
@@ -186,6 +193,7 @@ class Digggin_RobotRules_ImportNutch_NutchTest extends PHPUnit_Framework_TestCas
        true,   // "/foo/bar.html",
        true,   // "/f/",
      ),
+    'Agent3'=>
    array( // Agent3
        true,   // "/a",
        true,   // "/a/",
@@ -208,6 +216,7 @@ class Digggin_RobotRules_ImportNutch_NutchTest extends PHPUnit_Framework_TestCas
        true,   // "/foo/bar.html",
        true,   // "/f/",
      ),
+     'Agent4' =>
    array( // Agent4
        true,   // "/a",
        true,   // "/a/",
@@ -230,6 +239,7 @@ class Digggin_RobotRules_ImportNutch_NutchTest extends PHPUnit_Framework_TestCas
        true,   // "/foo/bar.html",
        true,   // "/f/",
      ),
+     'Agent5' =>
    array( // Agent5/"*"
        true,   // "/a",
        true,   // "/a/",
@@ -255,14 +265,15 @@ class Digggin_RobotRules_ImportNutch_NutchTest extends PHPUnit_Framework_TestCas
  ),
    array(
     // ROBOTS_STRINGS[1]
-     $this->_acceptAll, // Agent 1
-     $this->_acceptAll, // Agent 2
-     $this->_acceptAll, // Agent 3
-     $this->_acceptAll, // Agent 4
-     $this->_acceptAll // Agent 5
+     'Agent1' => $this->_acceptAll, // Agent 1
+     'Agent2' => $this->_acceptAll, // Agent 2
+     'Agent3' => $this->_acceptAll, // Agent 3
+     'Agent4' => $this->_acceptAll, // Agent 4
+     'Agent5' => $this->_acceptAll // Agent 5
    )
  );
    }
 
 
 }
+

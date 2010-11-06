@@ -9,9 +9,10 @@ class Diggin_RobotRules_Protocol_Txt_Line
     private $_comment;
 
     /**
+     * Parse
      *
      * @string $line
-     * @return Diggin_RobotRules_Line
+     * @return array|Diggin_RobotRules_Line|false
      */
     public static function parse($line)
     {
@@ -20,14 +21,35 @@ class Diggin_RobotRules_Protocol_Txt_Line
         
         preg_match('!\s*([^:]*):\s*([^#]*)\s*#*\s*([^\z]*)!i', 
                     $line, $match);
-                    
-        $line = new self;
-        $line->setField(strtolower(trim($match[1])));
-        $line->setValue($match[2]);
-        $line->setComment($match[3]);
-        
-        return $line;
+
+        // 2010.08
+        if ($match < 2) {
+            return false;
+        }
+
+        $values = preg_split('#\s+#', $match[2]);
+
+        if (count($values) > 1) {
+            $lines = array();
+
+            $line = new self;
+            $line->setField(strtolower(trim($match[1])));
+            $line->setComment(trim($match[3]));
+            foreach ($values as $k => $v) {
+                $line->setValue($v);
+                $lines[$k] = clone $line; 
+            }
+            return $lines;
+        } else {     
+            $line = new self;
+            $line->setField(strtolower(trim($match[1])));
+            $line->setValue(trim($match[2]));
+            $line->setComment(trim($match[3]));
+            return $line;
+        }
+
     }
+
 
     // line separetor is CRLF
     //

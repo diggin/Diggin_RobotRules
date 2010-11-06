@@ -85,6 +85,7 @@ EOF;
         $checks = explode("\n", $check);
         foreach ($checks as $c) {
             $s = preg_split('/ +/', $c);
+            //var_dump($s);
 
             //echo $s[0], PHP_EOL;
             $accepter->setUserAgent('unhipbot');
@@ -100,6 +101,7 @@ EOF;
             if (($s[2] == 'Yes') ? true: false) {
                 $this->assertTrue($accepter->isAllow($s[0]));
             } else {
+                //var_dump($s[0]);
                 $this->assertFalse($accepter->isAllow($s[0]));
             }
 
@@ -121,20 +123,7 @@ EOF;
             //echo $s[3], ' '; var_dump($accepter->isAllow($s[0]));
 
         }
-    }
-
-    public function testGetSet()
-    {
-
-
-    }
-
-
-    /**
-     */
-    public function testHoge()
-    {
-        $this->assertTrue(true);
+        //die;
     }
 
 }

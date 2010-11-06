@@ -33,7 +33,7 @@ class Diggin_RobotRules_Protocol_Txt implements Iterator
         //init check
         if (!preg_match('!\w\s*:!m', $this->_robotstxtstring)) {
             //require_once 'Diggin/RobotRules/Parser/Exception';
-            throw new Exception("Invalid format");
+            //throw new Exception("Invalid format");
         }
 
         if ($this->_robotstxt == '') {
@@ -46,15 +46,18 @@ class Diggin_RobotRules_Protocol_Txt implements Iterator
 
     public function current()
     {
-        //if $this->_robotstxt[$line] instanceof Diggin_RobotRules_Protocol_Txt_Line)
-        //
-
         //@not_todoif none 'User-Agent: line' is handled as *
         // はgetRecordされたときにおこなう
         $record = new Diggin_RobotRules_Protocol_Txt_Record;
         do {
             $ra = $this->_getRobotsTxtArray();
-            $record->append(Diggin_RobotRules_Protocol_Txt_Line::parse($ra[$this->_line]));
+            if ($line = Diggin_RobotRules_Protocol_Txt_Line::parse($ra[$this->_line])) {
+                if (is_array($line)) foreach ($line as $v) { 
+                    $record->append($v);
+                } else {
+                    $record->append($line);
+                }
+            }
             $this->_line++;
         } while (isset($this->_robotstxt[$this->_line]) and
                  preg_match('!\w\s*:!', $this->_robotstxt[$this->_line])); 
@@ -72,6 +75,7 @@ class Diggin_RobotRules_Protocol_Txt implements Iterator
 
     public function valid()
     {
+        if (!preg_match('!\w\s*:!s', $this->_robotstxtstring)) return false;
         return ($this->_line < count($this->_robotstxt)) ? true : false;
     }
 
