@@ -3,7 +3,6 @@
 class Diggin_RobotRules_Accepter_Txt 
     implements Diggin_RobotRules_Accepter_AccepterInterface
 {
-
     /** Diggin_RobotRules_Protocol_Txt*/
     private $_protocol;
     /** string or Zend_Http_Client */
@@ -24,14 +23,11 @@ class Diggin_RobotRules_Accepter_Txt
                 $path = $uri;
                 //$path = trim($uri, '/');
             }
-        } elseif (null === $uri) {
-            if ($this->_useragent instanceof Zend_Http_Client) {
-                $path = $this->_useragent->getUri()->getPath();
-            } else {
-                throw new Exception('$uri is not set');
-            }
-        } 
-
+        } else if (null === $uri && $this->_useragent instanceof Zend_Http_Client) {
+            $path = $this->_useragent->getUri()->getPath();
+        } else {
+            throw new Exception('$uri is not set');
+        }
 
         if (!$this->_protocol) {
             throw new Exception();
@@ -51,6 +47,7 @@ class Diggin_RobotRules_Accepter_Txt
             if ($d = $this->_matchCheck('disallow', $record, $path)) {
                 if ($a = $this->_matchCheck('allow', $record, $path)) {
                     if (strlen($d) > strlen($a)) {
+                        //$this->get
                         return false;
                     }
                     return true;
@@ -71,10 +68,7 @@ class Diggin_RobotRules_Accepter_Txt
     
     private function _sort($a, $b)
     {
-        if (count($a) == count($b)) {
-            return 0;
-        }
-        return (count($a) < count($b)) ? -1 : 1;
+        return (strlen($a->getValue()) < strlen($b->getValue())) ? -1 : 1;
     }
     
     protected function _matchCheck($field, Diggin_RobotRules_Protocol_Txt_Record $record, $path)
@@ -89,8 +83,6 @@ class Diggin_RobotRules_Accepter_Txt
         
         $recfield = $record[$field];
         usort($recfield, array($this, '_sort'));
-
-        $localdebug = false;
 
         foreach ($recfield as $line) {
             $value = $line->getValue();
@@ -126,5 +118,10 @@ class Diggin_RobotRules_Accepter_Txt
     public function setUserAgent($useragent)
     {
         $this->_useragent = $useragent;
+    }
+
+    public function getUserAgent($useragent)
+    {
+        return $this->_useragent;
     }
 }

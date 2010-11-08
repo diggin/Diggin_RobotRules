@@ -8,7 +8,7 @@ class Diggin_RobotRules_Accepter implements Diggin_RobotRules_Accepter_AccepterI
         foreach ($this->getRegistry()->getAccepter() as $key => $accepter) 
         {
             $accepter->setProtocol($this->getRegistry()->loadProtocol($key));
-            $accepter->isAllow();
+            $accepter->isAllow($path);
         }
     }
 }

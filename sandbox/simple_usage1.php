@@ -13,11 +13,15 @@ $line2->setValue('Mozilla');
 $line3 = new Diggin_RobotRules_Protocol_Txt_Line;
 $line3->setField('Allow');
 $line3->setValue('/test');
+$line4 = new Diggin_RobotRules_Protocol_Txt_Line;
+$line4->setField('Crawl-delay');
+$line4->setValue('120');
 
 $record = new Diggin_RobotRules_Protocol_Txt_Record;
 $record->append($line1);
 $record->append($line2);
 $record->append($line3);
+$record->append($line4);
 
 var_dump($record);
 echo $record;

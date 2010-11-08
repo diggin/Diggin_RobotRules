@@ -51,7 +51,9 @@ class Diggin_RobotRules_Accept_Txt_UserAgentSearchFilter extends FilterIterator
 }
 
 
-foreach (new Diggin_RobotRules_Accept_Txt_UserAgentSearchFilter($protocol, 'Google') as $key => $record)
+//foreach (new Diggin_RobotRules_Accept_Txt_UserAgentSearchFilter($protocol, 'Google') as $key => $record)
+foreach (new Diggin_RobotRules_Accept_Txt_UserAgentSearchFilter($protocol, 'Googlebot') as $key => $record)
 {
-    print_r($record);
+    var_dump($key);
+    //print_r($record);
 }

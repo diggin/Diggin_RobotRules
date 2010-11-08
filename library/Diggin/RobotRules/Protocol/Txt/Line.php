@@ -52,10 +52,9 @@ class Diggin_RobotRules_Protocol_Txt_Line
 
 
     // line separetor is CRLF
-    //
     public function __toString()
     {
-        return $this->getField().':'.$this->getValue().
+        return $this->getField().': '.$this->getValue().
             (isset($this->_comment) ? ' # '.$this->getComment(): '').self::EOL;
     }
 
