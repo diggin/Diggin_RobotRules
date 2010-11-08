@@ -1,8 +1,8 @@
 <?php
 /** Diggin_RobotRules_Protocol_Txt_Line **/
-require_once 'RobotRules/Protocol/Txt/Line.php';
+require_once '../library/Diggin/RobotRules/Protocol/Txt/Line.php';
 /** Diggin_RobotRules_Protocol_Txt_Record **/
-require_once 'RobotRules/Protocol/Txt/Record.php';
+require_once '../library/Diggin/RobotRules/Protocol/Txt/Record.php';
 
 $line1 = new Diggin_RobotRules_Protocol_Txt_Line;
 $line1->setField('Disallow');
