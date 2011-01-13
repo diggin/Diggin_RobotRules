@@ -1,24 +1,15 @@
 <?php
 
-require_once 'PHPUnit/Framework.php';
-
-
-set_include_path(dirname(__FILE__) . '/../../../../library' . PATH_SEPARATOR . get_include_path());
-
-require_once 'Zend/Loader/Autoloader.php';
-//Zend_Loader_Autoloader::getInstance()->setFallbackAutoloader(true);
-Zend_Loader_Autoloader::getInstance()->registerNamespace('Diggin_');
-
 //@see plugin/lib-http/src/test/org/apache/nutch/protocol/http/api TestRobotRulesParser
 class Digggin_RobotRules_ImportNutch_NutchTest extends PHPUnit_Framework_TestCase
 {
 
     public function testAcceptAll()
     {
-        $accepter = new Diggin_RobotRules_Accepter_Txt;
+        $accepter = new Diggin\RobotRules\Accepter\TxtAccepter;
 
         $robotstxt = $this->_getRobotsStrings();
-        $accepter->setProtocol($protocol = new Diggin_RobotRules_Protocol_Txt($robotstxt[0]));
+        $accepter->setRules($protocol = new Diggin\RobotRules\Parser\TxtParser($robotstxt[0]));
 
         $allowed = $this->_getAllowed();
 
@@ -29,7 +20,7 @@ class Digggin_RobotRules_ImportNutch_NutchTest extends PHPUnit_Framework_TestCas
             }
         }
 
-        $accepter->setProtocol($protocol = new Diggin_RobotRules_Protocol_Txt($robotstxt[1]));
+        $accepter->setRules($protocol = new Diggin\RobotRules\Parser\TxtParser($robotstxt[1]));
         foreach ($this->_agents as $agent) {
             $accepter->setUserAgent($agent);
             foreach($this->_testPaths as $key => $path) {

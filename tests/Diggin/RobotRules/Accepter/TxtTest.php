@@ -1,15 +1,5 @@
 <?php
 
-require_once 'PHPUnit/Framework.php';
-
-
-set_include_path(dirname(__FILE__) . '/../../../../library' . PATH_SEPARATOR . get_include_path());
-
-require_once 'Zend/Loader/Autoloader.php';
-//Zend_Loader_Autoloader::getInstance()->setFallbackAutoloader(true);
-Zend_Loader_Autoloader::getInstance()->registerNamespace('Diggin_');
-
-
 /**
  */
 class Diggin_RobotRules_Accepter_TxtTest extends PHPUnit_Framework_TestCase
@@ -79,9 +69,9 @@ http://www.fict.org/%7Ejim/jim.html          No       Yes       No
 http://www.fict.org/%7Emak/mak.html          No       Yes       Yes
 EOF;
 
-        $accepter = new Diggin_RobotRules_Accepter_Txt(); 
+        $accepter = new Diggin\RobotRules\Accepter\TxtAccepter(); 
 
-        $accepter->setProtocol($protocol = new Diggin_RobotRules_Protocol_Txt($txt));
+        $accepter->setRules($protocol = new Diggin\RobotRules\Parser\TxtParser($txt));
         $checks = explode("\n", $check);
         foreach ($checks as $c) {
             $s = preg_split('/ +/', $c);
