@@ -7,9 +7,11 @@ use Diggin\RobotRules\Rules\Txt\RecordEntity as Record;
 
 class TxtAccepter implements Accepter
 {
-    /** Diggin_RobotRules_Protocol_Txt*/
+    /**
+     * @var Diggin\RobotRules\Rules\Txt
+     */
     private $rules;
-    /** string or Zend_Http_Client */
+
     private $_useragent;
 
     private $_reason;
@@ -27,10 +29,10 @@ class TxtAccepter implements Accepter
                 $path = $uri;
                 //$path = trim($uri, '/');
             }
-        } else if (null === $uri && $this->_useragent instanceof Zend_Http_Client) {
+        } else if (null === $uri && $this->_useragent instanceof \Zend_Http_Client) {
             $path = $this->getUserAgent()->getUri()->getPath();
         } else {
-            throw new Exception('$uri is not set');
+            throw new \Exception('$uri is not set');
         }
 
         if (!$this->rules) {
@@ -111,6 +113,13 @@ class TxtAccepter implements Accepter
 
     public function setRules($rules)
     {
+        // treat as robots.txt string or file
+        if (is_string($rules)) {
+            // @todo handle robots.txt as filepass
+
+            $rules = new Diggin\RobotRules\Parser\TxtParser($rules);
+        }
+
         if (!($rules instanceof TxtRules)) {
             throw new \Exception();
         }

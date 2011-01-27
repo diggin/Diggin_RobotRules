@@ -4,29 +4,22 @@
  */
 class Diggin_RobotRules_Accepter_TxtTest extends PHPUnit_Framework_TestCase
 {
+    
     /**
-     * @access protected
+     * @expectedException \Exception
      */
-    protected $object;
-
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     *
-     * @access protected
-     */
-    protected function setUp()
+    public function testFailingInvalidArg()
     {
+        $accepter = new Diggin\RobotRules\Accepter\TxtAccepter(); 
+        $accepter->isAllow(false); 
     }
-
     /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     *
-     * @access protected
+     * @expectedException \Exception
      */
-    protected function tearDown()
+    public function testFailingIfRulesNotSet()
     {
+        $accepter = new Diggin\RobotRules\Accepter\TxtAccepter(); 
+        $accepter->isAllow('http://example.com/'); 
     }
 
     public function testRobotstxtorg()
