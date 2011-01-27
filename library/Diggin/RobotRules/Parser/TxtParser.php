@@ -37,16 +37,15 @@ class TxtParser implements TxtRules
         preg_match('!\s*([^:]*):\s*([^#]*)\s*#*\s*([^\z]*)!i', 
                     $line, $match);
 
-        // 2010.08
-        if ($match < 2) {
+        // ignore unmatched txt line.
+        if (count($match) < 2) {
             return false;
         }
 
-        $values = preg_split('#\s+#', $match[2]);
+        $values = preg_split('#\s+#', trim($match[2]));
 
         if (count($values) > 1) {
             $lines = array();
-
             $line = new Line;
             $line->setField(strtolower(trim($match[1])));
             $line->setComment(trim($match[3]));
