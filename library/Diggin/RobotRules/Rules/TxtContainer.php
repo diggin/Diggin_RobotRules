@@ -5,6 +5,7 @@ namespace Diggin\RobotRules\Rules;
 class TxtContainer implements Txt
 {
     private $records;
+    private $position = 0;
     
     /**
      * @param Traversble|array
@@ -16,27 +17,29 @@ class TxtContainer implements Txt
 
     public function current()
     {
-        return $this->records[$this->point];
+        return current($this->records);
     }
 
     public function next()
     {
-        
+        next($this->records);
+        $this->position++;
     }
 
     public function valid()
     {
-        
+        return $this->position < count($this->records);
     }
 
     public function key()
     {
-        return $this->_key;
+        return key($this->records);
     }
 
     public function rewind()
     {
-        $this->_line = 0;
+        reset($this->records);
+        $this->position = 0;
     }
 
 }
