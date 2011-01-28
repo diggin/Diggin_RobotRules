@@ -9,10 +9,10 @@ class TxtContainerTest extends \PHPUnit_Framework_TestCase
     {
         $lineAgent = new Line;
         $lineAgent->setField('User-agent');
-        $lineAgent->setValue('test');
+        $lineAgent->setValue('test0');
         $lineDisallow = new Line;
         $lineDisallow->setField('disallow');
-        $lineDisallow->setValue('/test');
+        $lineDisallow->setValue('/test0');
 
         $record = new Record;
         $record->append($lineAgent);
@@ -23,13 +23,20 @@ class TxtContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceof('\\Diggin\\RobotRules\\Rules\\Txt\\RecordEntity', $txt->current());
 
         $record2 = new Record;
-        $record2->append($lineAgent->setValue('test2'));
-        $record2->append($lineDisallow->setValue('/test2'));
+        $lineAgent1 = clone $lineAgent;
+        $lineAgent1->setValue('test1');
+        $record2->append($lineAgent1);
+        $lineDisallow1 = clone $lineDisallow;
+        $lineDisallow1->setValue('/test1');
+        $record2->append($lineDisallow1);
 
         $txt = new TxtContainer(array($record, $record2));
 
-        foreach ($txt as $record) {
+        foreach ($txt as $key => $record) {
             $this->assertInstanceof('\\Diggin\\RobotRules\\Rules\\Txt\\RecordEntity', $record);
+            $disallows = $record['disallow'];
+            $disallow = current($disallows);
+            $this->assertEquals('/test'.$key, $disallow->getValue());
         }
     }
 }
