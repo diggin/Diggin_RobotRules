@@ -21,6 +21,16 @@ class TxtContainerTest extends \PHPUnit_Framework_TestCase
         $txt = new TxtContainer(array($record));
 
         $this->assertInstanceof('\\Diggin\\RobotRules\\Rules\\Txt\\RecordEntity', $txt->current());
+
+        $record2 = new Record;
+        $record2->append($lineAgent->setValue('test2'));
+        $record2->append($lineDisallow->setValue('/test2'));
+
+        $txt = new TxtContainer(array($record, $record2));
+
+        foreach ($txt as $record) {
+            $this->assertInstanceof('\\Diggin\\RobotRules\\Rules\\Txt\\RecordEntity', $record);
+        }
     }
 }
 
