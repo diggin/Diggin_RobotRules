@@ -81,8 +81,6 @@ class TxtParser implements TxtRules
 
     public function current()
     {
-        //@not_todoif none 'User-Agent: line' is handled as *
-        // はgetRecordされたときにおこなう
         $record = new Record;
         do {
             $ra = $this->_getRobotsTxtArray();
@@ -104,7 +102,7 @@ class TxtParser implements TxtRules
     {
         do {
             $this->_line++;
-        } while ($this->valid() && !preg_match('!\w:!', $this->_robotstxt[$this->_line]));
+        } while ($this->valid() && !preg_match('!\w\s*:!', $this->_robotstxt[$this->_line]));
         $this->_key++;
     }
 
@@ -121,7 +119,16 @@ class TxtParser implements TxtRules
 
     public function rewind()
     {
+        // initialize to array
+        $this->_getRobotsTxtArray();
+
         $this->_line = 0;
+        do {
+            if (preg_match('!\w\s*:!', $this->_robotstxt[$this->_line])) {
+                break;
+            }
+            $this->_line++;
+        } while ($this->valid());
     }
 
 }

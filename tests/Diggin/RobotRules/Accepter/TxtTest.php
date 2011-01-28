@@ -21,6 +21,36 @@ class Diggin_RobotRules_Accepter_TxtTest extends PHPUnit_Framework_TestCase
         $accepter = new Diggin\RobotRules\Accepter\TxtAccepter(); 
         $accepter->isAllow('http://example.com/'); 
     }
+    
+    public function testParseCommentAndBlankline()
+    {
+$txt = <<<EOF
+#  robots.txt for www.example.com
+
+User-agent: *
+Disallow: /aaa/
+EOF;
+
+        $accepter = new Diggin\RobotRules\Accepter\TxtAccepter(); 
+        $accepter->setRules(new Diggin\RobotRules\Parser\TxtParser($txt));
+
+        $accepter->setUserAgent('webcrawler');
+        $this->assertFalse($accepter->isAllow('/aaa/'));
+
+$txt = <<<EOF
+User-agent: webcrawler
+Disallow:
+
+#  robots.txt for www.example.com
+
+User-agent: *
+Disallow: /aaa/
+EOF;
+        $accepter->setRules(new Diggin\RobotRules\Parser\TxtParser($txt));
+
+        $accepter->setUserAgent('webcrawler');
+        $this->assertTrue($accepter->isAllow('/bb/'));
+    }
 
     public function testRobotstxtorg()
     {
