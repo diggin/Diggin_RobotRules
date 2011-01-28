@@ -7,6 +7,9 @@ class TxtContainerTest extends \PHPUnit_Framework_TestCase
 {
     public function testStandardSet()
     {
+        $txt = new TxtContainer(array());
+        $this->assertFalse($txt->current());
+
         $lineAgent = new Line;
         $lineAgent->setField('User-agent');
         $lineAgent->setValue('test0');
