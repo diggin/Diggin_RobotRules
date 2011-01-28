@@ -23,8 +23,8 @@ class TxtParser implements TxtRules
         // normalize line
         $robotstxt = str_replace(chr(13).chr(10), chr(10), $robotstxt);
 
-        // CRLF
-        //http://web.archive.org/web/20080702125527/http://www.robotstxt.org/norobots-rfc.txt
+        // Formally as RFC draft, robots.txt file is written with CRLF
+        // @see http://www.robotstxt.org/norobots-rfc.txt
         $robotstxt = str_replace(array(chr(10), chr(13)), chr(13).chr(10), $robotstxt);
 
         $robotstxt = explode(chr(13).chr(10), $robotstxt);
@@ -66,7 +66,7 @@ class TxtParser implements TxtRules
     protected function _getRobotsTxtArray()
     {
         //init check
-        if (!preg_match('!\w\s*:!m', $this->_robotstxtstring)) {
+        if (!preg_match('!\w\s*:!s', $this->_robotstxtstring)) {
             //require_once 'Exception';
             //throw new Exception("Invalid format");
         }
@@ -81,6 +81,8 @@ class TxtParser implements TxtRules
 
     public function current()
     {
+        if (!$this->valid()) return null;
+
         $record = new Record;
         do {
             $ra = $this->_getRobotsTxtArray();

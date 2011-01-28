@@ -4,6 +4,17 @@ use Diggin\RobotRules\Rules\Txt\LineEntity as Line;
 
 class TxtParserTest extends \PHPUnit_Framework_TestCase
 {
+    public function testBlank()
+    {
+$txt = <<<EOF
+
+EOF;
+
+        $parser = new TxtParser($txt);
+        $this->assertEquals(null, $parser->current(), 'parser should return null, if no field');
+    }
+
+
     public function testParseLine()
     {
         // not robots.txt line

@@ -42,7 +42,12 @@ class TxtAccepter implements Accepter
         foreach ($this->rules as $k => $record) {
 
             //record has some user-agents
-            $useragents = $record['user-agent'];
+            // checking field set has user-agent
+            if (isset($record['user-agent'])) {
+                $useragents = $record['user-agent'];
+            } else {
+                continue;
+            }
 
             foreach ($useragents as &$u) $u = $u->getValue(); unset($u);
 
