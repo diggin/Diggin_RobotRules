@@ -8,8 +8,8 @@ use Diggin\RobotRules\Rules\Txt\RecordEntity as Record;
 class TxtParser implements TxtRules
 {
     private $_robotstxtstring = '';
-    private $_robotstxt = '';
-    private $_line = 0;
+    protected $_robotstxt = '';
+    protected $_line = 0;
     private $_key = 0;
 
     

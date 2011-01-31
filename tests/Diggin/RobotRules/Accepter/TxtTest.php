@@ -32,7 +32,8 @@ Disallow: /aaa/
 EOF;
 
         $accepter = new Diggin\RobotRules\Accepter\TxtAccepter(); 
-        $accepter->setRules(new Diggin\RobotRules\Parser\TxtParser($txt));
+        //$accepter->setRules(new Diggin\RobotRules\Parser\TxtParser($txt));
+        $accepter->setRules(Diggin\RobotRules\Parser\TxtStringParser::parse($txt));
 
         $accepter->setUserAgent('webcrawler');
         $this->assertFalse($accepter->isAllow('/aaa/'));
@@ -46,7 +47,8 @@ Disallow:
 User-agent: *
 Disallow: /aaa/
 EOF;
-        $accepter->setRules(new Diggin\RobotRules\Parser\TxtParser($txt));
+        //$accepter->setRules(new Diggin\RobotRules\Parser\TxtParser($txt));
+        $accepter->setRules(Diggin\RobotRules\Parser\TxtStringParser::parse($txt));
 
         $accepter->setUserAgent('webcrawler');
         $this->assertTrue($accepter->isAllow('/bb/'));
@@ -94,11 +96,11 @@ EOF;
 
         $accepter = new Diggin\RobotRules\Accepter\TxtAccepter(); 
 
-        $accepter->setRules($protocol = new Diggin\RobotRules\Parser\TxtParser($txt));
+        //$accepter->setRules(new Diggin\RobotRules\Parser\TxtParser($txt));
+        $accepter->setRules(Diggin\RobotRules\Parser\TxtStringParser::parse($txt));
         $checks = explode("\n", $check);
         foreach ($checks as $c) {
             $s = preg_split('/ +/', $c);
-            //var_dump($s);
 
             //echo $s[0], PHP_EOL;
             $accepter->setUserAgent('unhipbot');
