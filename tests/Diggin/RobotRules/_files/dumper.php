@@ -9,9 +9,13 @@ Zend_Loader_Autoloader::getInstance()->setFallbackAutoloader(true);
 Zend_Loader_Autoloader::getInstance()->registerNamespace('Diggin');
 
 
-//if ($argv[1])
+$directory = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('.'));
+if ($regex = $argv[1]) {
+    $directory = new RegexIterator($directory, $regex);
+}
 
-foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator('.')) as $f) {
+
+foreach ($directory as $f) {
     if ($f->isFile() && ('robots.txt'== $f->getFileName())) {
         echo $f, PHP_EOL;
 
