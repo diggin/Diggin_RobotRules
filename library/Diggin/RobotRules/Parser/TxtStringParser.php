@@ -70,7 +70,11 @@ class TxtStringParser
         return new TxtContainer($records);
     }
     
-    
+    /**
+     *
+     * @param string $robotstxt
+     * @return array
+     */
     protected static function _toArray($robotstxt)
     {
         // normalize line
@@ -85,8 +89,20 @@ class TxtStringParser
         return $robotstxt;
     }
 
+    /**
+     * parse a line
+     *
+     * @param string $line
+     * @return Line|array|false
+     */ 
     public static function parseLine($line)
     {        
+        // @todo write unit-test
+        // start with comment?
+        if (preg_match('!^\s*#!', $line)) {
+            return false;    
+        }
+
         preg_match('!\s*([^:]*):\s*([^#]*)\s*#*\s*([^\z]*)!i', 
                     $line, $match);
 
