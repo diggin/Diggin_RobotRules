@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+User-agent: Adsbot-Google
+Disallow: /
+
+User-agent: Googlebot-Image
+Disallow: /static/
+Allow: /
+

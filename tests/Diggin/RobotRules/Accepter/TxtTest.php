@@ -13,6 +13,7 @@ class Diggin_RobotRules_Accepter_TxtTest extends PHPUnit_Framework_TestCase
         $accepter = new Diggin\RobotRules\Accepter\TxtAccepter(); 
         $accepter->isAllow(false); 
     }
+
     /**
      * @expectedException \Exception
      */
