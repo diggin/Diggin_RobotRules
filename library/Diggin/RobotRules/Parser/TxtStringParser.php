@@ -36,7 +36,7 @@ class TxtStringParser
             }
             
             if (is_array($line)) {
-                $first_line = \current($line);
+                $first_line = current($line);
                 $end_line = end($line);
             } else {
                 $first_line = $line;

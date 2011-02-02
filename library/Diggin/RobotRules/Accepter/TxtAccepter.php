@@ -14,8 +14,6 @@ class TxtAccepter implements Accepter
 
     private $_useragent;
 
-    private $_reason;
-
     public function isAllow($uri = null)
     {
         if ($uri instanceof \Zend_Uri_Http) {
@@ -36,7 +34,7 @@ class TxtAccepter implements Accepter
         }
 
         if (!$this->rules) {
-            throw new \Exception();
+            throw new \Exception('robots.txt rule is no specified. Use setRules()');
         }
 
         foreach ($this->rules as $k => $record) {
@@ -58,7 +56,6 @@ class TxtAccepter implements Accepter
             if ($d = $this->_matchCheck('disallow', $record, $path)) {
                 if ($a = $this->_matchCheck('allow', $record, $path)) {
                     if (strlen($d) > strlen($a)) {
-                        //$this->get
                         return false;
                     }
                     return true;
