@@ -14,6 +14,28 @@ EOF;
         $this->assertEquals(null, $txtContainer->current(), 'parser should return null, if no field');
     }
 
+    public function testUnexpectedBlank()
+    {
+$txt = <<<EOF
+User-agent: *
+Disallow: /path/
+
+Allow: /path/to/
+EOF;
+
+        $txtContainer = TxtStringParser::parse($txt);
+        $record = $txtContainer->current();
+
+        $this->assertEquals('/path/', current($record->offsetGet('disallow'))->getValue());
+        $this->assertEquals('/path/to/', current($record->offsetGet('allow'))->getValue());
+
+        // Accepter test
+        $accepter = new \Diggin\RobotRules\Accepter\TxtAccepter;
+        $accepter->setRules($txtContainer);
+
+        $this->assertFalse($accepter->isAllow('/path/to1/aaa'));
+        $this->assertTrue($accepter->isAllow('/path/to/aaa'));
+    }
 
     public function testParseLine()
     {
