@@ -12,7 +12,7 @@ class TxtAccepter implements Accepter
      */
     private $rules;
 
-    private $_useragent;
+    private $useragent;
 
     public function isAllow($uri = null)
     {
@@ -27,7 +27,7 @@ class TxtAccepter implements Accepter
                 $path = $uri;
                 //$path = trim($uri, '/');
             }
-        } else if (null === $uri && $this->_useragent instanceof \Zend_Http_Client) {
+        } else if (null === $uri && $this->getUserAgent() instanceof \Zend_Http_Client) {
             $path = $this->getUserAgent()->getUri()->getPath();
         } else {
             throw new \Exception('$uri is not set');
@@ -37,6 +37,9 @@ class TxtAccepter implements Accepter
             throw new \Exception('robots.txt rule is no specified. Use setRules()');
         }
 
+        // flag 
+        $allow = true;
+        
         foreach ($this->rules as $k => $record) {
 
             //record has some user-agents
@@ -49,25 +52,31 @@ class TxtAccepter implements Accepter
 
             foreach ($useragents as &$u) $u = $u->getValue(); unset($u);
 
-            if ( (!in_array($this->_useragent, $useragents)) and
-                  (!in_array('*', $useragents))) continue;         
+            if (in_array($this->getUserAgent(), $useragents)) {
+                $ua = $this->getUserAgent();
+            } else if (in_array('*', $useragents)) {
+                if (isset($ua)) continue;
+            } else {
+                continue;
+            }
 
             //match check
             if ($d = $this->_matchCheck('disallow', $record, $path)) {
                 if ($a = $this->_matchCheck('allow', $record, $path)) {
                     if (strlen($d) > strlen($a)) {
-                        return false;
+                        $allow = false;
+                        continue;
                     }
-                    return true;
+                    $allow = true;
+                    continue;
                 } else {
-                    return false;
+                    $allow = false;
+                    continue;
                 }
             }
-
-            break;
         }
 
-        return true;
+        return $allow;
     }
     
     private function _sort($a, $b)
@@ -127,12 +136,12 @@ class TxtAccepter implements Accepter
 
     public function setUserAgent($useragent)
     {
-        $this->_useragent = $useragent;
+        $this->useragent = $useragent;
     }
 
     public function getUserAgent()
     {
-        return $this->_useragent;
+        return $this->useragent;
     }
 
 }

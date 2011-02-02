@@ -26,7 +26,12 @@ class Digggin_RobotRules_Imported_NutchTest extends PHPUnit_Framework_TestCase
         foreach ($this->_agents as $agent) {
             $accepter->setUserAgent($agent);
             foreach($this->_testPaths as $key => $path) {
-                $this->assertTrue($allowed[0][$agent][$key] === $accepter->isAllow($path));
+                $this->assertTrue($allowed[0][$agent][$key] === $accepter->isAllow($path), 
+                                  'agent :'.var_export($agent, true).PHP_EOL.
+                                  'path :'.var_export($path, true).PHP_EOL.
+                                  'boolean :'.var_export($accepter->isAllow($path), true).PHP_EOL
+                                  
+                                  );
             }
         }
 

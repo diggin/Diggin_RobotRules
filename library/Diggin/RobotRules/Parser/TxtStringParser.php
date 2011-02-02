@@ -7,10 +7,13 @@ use Diggin\RobotRules\Rules\TxtContainer;
 
 class TxtStringParser
 {
-    private function __construct()
-    {}
+
+    private function __construct(){}
 
     /**
+     * Parse robots.txt string content
+     * 
+     * @param string $robotstxt
      * @return \Diggin\RobotRules\Rules\TxtContainer
      */
     public static function parse($robotstxt)

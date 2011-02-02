@@ -33,7 +33,6 @@ Disallow: /aaa/
 EOF;
 
         $accepter = new Diggin\RobotRules\Accepter\TxtAccepter(); 
-        //$accepter->setRules(new Diggin\RobotRules\Parser\TxtParser($txt));
         $accepter->setRules(Diggin\RobotRules\Parser\TxtStringParser::parse($txt));
 
         $accepter->setUserAgent('webcrawler');
@@ -48,12 +47,40 @@ Disallow:
 User-agent: *
 Disallow: /aaa/
 EOF;
-        //$accepter->setRules(new Diggin\RobotRules\Parser\TxtParser($txt));
         $accepter->setRules(Diggin\RobotRules\Parser\TxtStringParser::parse($txt));
 
         $accepter->setUserAgent('webcrawler');
         $this->assertTrue($accepter->isAllow('/bb/'));
     }
+
+    public function testMultiUseragentSet()
+    {
+        //$this->markTestSkipped();
+
+$txt = <<<EOF
+User-agent: Googlebot
+Disallow: /test/
+
+User-agent: Googlebot2
+Disallow: /test/
+
+User-agent: Googlebot
+Disallow: /foo/baz
+
+User-agent: *
+Disallow: /foo/bar/
+EOF;
+
+        $accepter = new Diggin\RobotRules\Accepter\TxtAccepter(); 
+        $accepter->setRules(Diggin\RobotRules\Parser\TxtStringParser::parse($txt));
+
+        $accepter->setUserAgent('Googlebot');
+        $this->assertFalse($accepter->isAllow('/test/1.jpg'));
+        $this->assertFalse($accepter->isAllow('/foo/baz/baz.html'));
+        $this->assertTrue($accepter->isAllow('/foo/bar/baz.html'));
+
+    }
+        
 
     public function testRobotstxtorg()
     {
