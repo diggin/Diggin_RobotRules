@@ -53,6 +53,12 @@ class TxtStringParser
             if (!($previous_line instanceof Line) && ('user-agent' === $first_line->getField())) {
                 if (isset($record)) $records[] = $record; //push previous record
                 $record = new Record();
+            } else if (($line instanceof Line) and ('sitemap' === $line->getField())) {
+                if (!($previous_line instanceof Line) or ('sitemap' !== $previous_line->getField()) ) {
+                    if (isset($sitemap_record)) $records[] = $sitemap_record;
+                    $sitemap_record = new Record;
+                }
+                $sitemap_record->append($line);
             }
             
             if (is_array($line)) {
@@ -67,8 +73,9 @@ class TxtStringParser
             $previous_line = $end_line;
         } while(count($robotstxts) > $lineno);
         
-        // push last reocrd
+        // push last record
         if (isset($record)) $records[] = $record;
+        if (isset($sitemap_record)) $records[] = $sitemap_record;
         
         return new TxtContainer($records);
     }
