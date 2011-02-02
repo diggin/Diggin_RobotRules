@@ -65,10 +65,6 @@ class TxtAccepter implements Accepter
                 } else {
                     return false;
                 }
-            } else {
-                if ($this->_matchCheck('allow', $record, $path)) {
-                    return true;
-                }
             }
 
             break;
