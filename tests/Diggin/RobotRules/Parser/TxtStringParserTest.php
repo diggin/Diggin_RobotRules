@@ -2,53 +2,7 @@
 namespace Diggin\RobotRules\Parser;
 use Diggin\RobotRules\Rules\Txt\LineEntity as Line;
 
-class KeyIterator extends \FilterIterator
-{
-    private $key;
-
-    public function setKey($key)
-    {
-        $this->key = $key;
-    }
-
-    public function current()
-    {
-        return parent::current()->offsetGet($this->key);
-    }
-
-    public function accept()
-    {
-        return parent::current()->offsetExists($this->key);
-    }
-}
-
-
-class ValueIterator extends \RecursiveFilterIterator
-{
-    //public function getChildren()
-    //{
-    //    return new \ArrayIterator(parent::current()->offsetGet($this->key));
-    //}
-
-    public function hasChildren()
-    {
-        return !(parent::current() instanceof \Diggin\RobotRules\Rules\RecordEntity);
-    }
-
-    public function current1()
-    {
-        return parent::current()->offsetGet($this->key);
-    }
-
-    public function accept()
-    {
-        return true;
-        return parent::current()->offsetExists($this->key);
-    }
-
-}
-
-class Re extends \IteratorIterator //implements \RecursiveIterator
+class SpecifiedFieldValueIterator extends \IteratorIterator
 {
     private $pos = false;
     private $fieldKey = 'sitemap';
@@ -63,7 +17,7 @@ class Re extends \IteratorIterator //implements \RecursiveIterator
     {
         $fieldArray = $this->getInnerIterator()->current()->offsetGet($this->fieldKey);
         
-        return $fieldArray[(int)$this->pos];
+        return $fieldArray[(int)$this->pos]->getValue();
     }
 
     public function next()
@@ -139,25 +93,10 @@ EOF;
 
         $txtContainer = $txtContainer0 = TxtStringParser::parse($txt);
 
-        //$values = new ValueIterator($txtContainer);
-        //foreach (new \RecursiveIteratorIterator($values) as $v) {
-        //    var_dump($v);
-        //}
-        //return;
-        
-        $txtContainer = new KeyIterator($txtContainer);
-        $txtContainer->setKey('sitemap');
-
-        //$records = iterator_to_array($txtContainer);
-        //$records = iterator_to_array(new \RecursiveIteratorIterator(new \RecursiveArrayIterator($txtContainer)), true);
-        //foreach (new \RecursiveIteratorIterator($txtContainer) as $a) {
-
-
-        //var_dump($txtContainer);
-        $re = new Re($txtContainer0);
+        $re = new SpecifiedFieldValueIterator($txtContainer0);
 
         foreach ($re as $v) {
-            var_dump($v->getValue(), PHP_EOL);
+            var_dump($v, PHP_EOL);
         }
     }
 
