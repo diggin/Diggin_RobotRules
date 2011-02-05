@@ -21,11 +21,9 @@ class TxtAccepter implements Accepter
         } else if (is_string($uri)) {
             if (preg_match('#^http#', $uri)) {
                 require_once 'Zend/Uri.php';
-                ////if (!@parse_url) $path =
                 $path = \Zend_Uri::factory($uri)->getPath();
             } else {
                 $path = $uri;
-                //$path = trim($uri, '/');
             }
         } else if (null === $uri && $this->getUserAgent() instanceof \Zend_Http_Client) {
             $path = $this->getUserAgent()->getUri()->getPath();
@@ -34,7 +32,7 @@ class TxtAccepter implements Accepter
         }
 
         if (!$this->rules) {
-            throw new \Exception('robots.txt rule is no specified. Use setRules()');
+            throw new \Exception('robots.txt rule is not specified. Use setRules()');
         }
 
         // flag 
@@ -42,14 +40,14 @@ class TxtAccepter implements Accepter
         
         foreach ($this->rules as $k => $record) {
 
-            //record has some user-agents
-            // checking field set has user-agent
+            // checking field-set has user-agent
             if (isset($record['user-agent'])) {
                 $useragents = $record['user-agent'];
             } else {
                 continue;
             }
 
+            //record has some user-agents
             foreach ($useragents as &$u) $u = $u->getValue(); unset($u);
 
             if (in_array($this->getUserAgent(), $useragents)) {
@@ -104,13 +102,15 @@ class TxtAccepter implements Accepter
             
             if ($value === '/') {
                 if ($path === '/') return true;
-                //continue;
             }
             
             $value = urldecode($value);
             $path = urldecode($path);
 
-            if (preg_match('#^'. preg_quote($value) . '#', $path)) {
+            // @todo unescape '?' '*'
+            // str_replace(array('\?', '\*'), array('?', '*'), preg_quote($value));
+            //if (preg_match('#^'. preg_quote($value) . '#', $path)) {
+            if (preg_match('#^'. str_replace(array('\?', '\*'), array('?', '*'), preg_quote($value)) . '#', $path)) {
                 $flag = $value;
             }
         }

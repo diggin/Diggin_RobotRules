@@ -1,46 +1,8 @@
 <?php
 namespace Diggin\RobotRules\Parser;
 use Diggin\RobotRules\Rules\Txt\LineEntity as Line;
+use Diggin\RobotRules\Rules\Txt\SpecifiedFieldValueIterator;
 
-class SpecifiedFieldValueIterator extends \IteratorIterator
-{
-    private $pos = false;
-    private $fieldKey = 'sitemap';
-    private $fieldnum = 0;
-
-    public function setFieldKey($key)
-    {
-        $this->fieldKey = $key;
-    }
-    
-    public function current()
-    {
-        $fieldArray = $this->getInnerIterator()->current()->offsetGet($this->fieldKey);
-        
-        return $fieldArray[(int)$this->pos]->getValue();
-    }
-
-    public function next()
-    {
-        if ($this->pos === false) {
-            $fieldArray = $this->getInnerIterator()->current()->offsetGet($this->fieldKey);
-            $this->fieldnum = count($fieldArray);
-            $this->pos = 1;
-        } else if ($this->pos < $this->fieldnum){
-            $this->pos++;
-        }
-        
-        if ($this->fieldnum === ($this->pos)) {
-            $this->getInnerIterator()->next();
-            $this->pos = false;
-        }
-    }
-
-    public function valid()
-    {
-        return ($this->getInnerIterator()->current() instanceof \Diggin\RobotRules\Rules\Txt\RecordEntity);
-    }
-}
 
 class TxtStringParserTest extends \PHPUnit_Framework_TestCase
 {
@@ -79,6 +41,8 @@ EOF;
 
     public function testGetSitemap()
     {
+
+
 $txt = <<<EOF
 Sitemap: http://example.com/sitemap1.xml
 Sitemap: http://example.com/sitemap2.xml
@@ -88,16 +52,42 @@ Disallow: /path/
 Sitemap: http://example.com/sitemap3.xml
 Sitemap: http://example.com/sitemap4.xml
 
+User-agent: Robot
+Disallow: /path/
+
 Sitemap: http://example.com/sitemap.xml
 EOF;
 
-        $txtContainer = $txtContainer0 = TxtStringParser::parse($txt);
+        $txtContainer = TxtStringParser::parse($txt);
 
-        $re = new SpecifiedFieldValueIterator($txtContainer0);
+        //var_dump($txtContainer);
 
-        foreach ($re as $v) {
-            var_dump($v, PHP_EOL);
+        foreach (SpecifiedFieldValueIterator::factory($txtContainer, 'Sitemap') as $v) {
+            $this->assertRegExp('#http#', $v);
         }
+
+
+$txt = <<<EOF
+User-agent: *
+
+User-agent: Test
+Sitemap: http://example.com/sitemap.xml
+EOF;
+
+        $txtContainer = TxtStringParser::parse($txt);
+        $sfvi = SpecifiedFieldValueIterator::factory($txtContainer, 'Sitemap');
+        $this->assertRegExp('#http#', $sfvi->current());
+
+$txt = <<<EOF
+# comment
+Sitemap: http://example.com/sitemap.xml
+EOF;
+
+        $txtContainer = TxtStringParser::parse($txt);
+        $sfvi = SpecifiedFieldValueIterator::factory($txtContainer, 'Sitemap');
+        $this->assertRegExp('#http#', $sfvi->current());
+
+
     }
 
     public function testParseLine()

@@ -7,6 +7,9 @@ use Diggin\RobotRules\Rules\TxtContainer;
 
 class TxtStringParser
 {
+    protected $config = array(
+        'space_as_separator' => false
+    );
 
     private function __construct(){}
 
@@ -53,25 +56,22 @@ class TxtStringParser
             if (!($previous_line instanceof Line) && ('user-agent' === $first_line->getField())) {
                 if (isset($record)) $records[] = $record; //push previous record
                 $record = new Record();
-            } else if (($line instanceof Line) and ('sitemap' === $line->getField())) {
-                if (!($previous_line instanceof Line) or ('sitemap' !== $previous_line->getField()) ) {
-                    if (isset($sitemap_record)) $records[] = $sitemap_record;
-                    $sitemap_record = new Record;
+            } 
+            
+
+            $lines = (is_array($line)) ? $line : array($line);
+            foreach ($lines as $line) {
+                if ('sitemap' !== $line->getField()) {
+                    if (!isset($record)) $record = new Record;
+                    $record->append($line);
+                } else {
+                    if (!isset($sitemap_record)) $sitemap_record = new Record;
+                    $sitemap_record->append($line);
                 }
-                $sitemap_record->append($line);
             }
             
-            if (is_array($line)) {
-                foreach ($line as $v) { 
-                    $record->append($v);
-                }
-            } else {
-                $record->append($line);
-            }
-            
-            //$previous_line = $line;
             $previous_line = $end_line;
-        } while(count($robotstxts) > $lineno);
+        } while (count($robotstxts) > $lineno);
         
         // push last record
         if (isset($record)) $records[] = $record;
