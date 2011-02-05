@@ -11,7 +11,17 @@ class TxtStringParser
         'space_as_separator' => false
     );
 
-    private function __construct(){}
+    public function __construct($config = null)
+    {
+        if ($config) $this->setConfig($config);
+    }
+
+    public function setConfig($config)
+    {
+        foreach ($config as $key => $value) {
+            $this->config[$key] = $value;
+        }
+    }
 
     /**
      * Parse robots.txt string content
@@ -19,13 +29,15 @@ class TxtStringParser
      * @param string $robotstxt
      * @return \Diggin\RobotRules\Rules\TxtContainer
      */
-    public static function parse($robotstxt)
+    public static function parse($robotstxt, $config = null)
     {
         if (!preg_match('!\w\s*:!s', $robotstxt)) {
             return new TxtContainer(array());
         }
+
+        $static = new static($config);
         
-        $robotstxts = self::_toArray($robotstxt);
+        $robotstxts = static::_toArray($robotstxt);
         
         $records = array();
         $lineno = 0;
@@ -33,7 +45,7 @@ class TxtStringParser
         
         do {
             
-            $line = self::parseLine($robotstxts[$lineno]);
+            $line = $static->parseLine($robotstxts[$lineno]);
             $lineno++;
             
             if (!$line) {
@@ -105,7 +117,7 @@ class TxtStringParser
      * @param string $line
      * @return Line|array|false
      */ 
-    public static function parseLine($line)
+    public function parseLine($line)
     {        
         // @todo write unit-test
         // start with comment?
@@ -121,9 +133,11 @@ class TxtStringParser
             return false;
         }
 
-        $values = preg_split('#\s+#', trim($match[2]));
+        if ($this->config['space_as_separator']) {
+            $values = preg_split('#\s+#', trim($match[2]));
+        }
 
-        if (count($values) > 1) {
+        if (isset($values) && count($values) > 1) {
             $lines = array();
             $line = new Line;
             $line->setField(strtolower(trim($match[1])));

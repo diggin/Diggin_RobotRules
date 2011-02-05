@@ -92,27 +92,33 @@ EOF;
 
     public function testParseLine()
     {
-        // not robots.txt line
-        $ret = TxtStringParser::parseLine('');
+        // not robots.txt Line
+        $parser = new TxtStringParser;
+        $ret = $parser->parseLine('');
         $this->assertFalse($ret);
-        $ret = TxtStringParser::parseLine('foo bar');
+        $ret = $parser->parseLine('foo bar');
         $this->assertFalse($ret);
-        $ret = TxtStringParser::parseLine('foo#bar');
+        $ret = $parser->parseLine('foo#bar');
         $this->assertFalse($ret);
 
-        $ret = TxtStringParser::parseLine('Disallow: /foo/');
+        $ret = $parser->parseLine('Disallow: /foo/');
         $this->assertTrue($ret instanceof Line);
         $this->assertEquals('disallow', $ret->getField());
         $this->assertEquals('/foo/', $ret->getValue());
         $this->assertEquals("", $ret->getComment());
         
         // handle comment
-        $ret = TxtStringParser::parseLine("Disallow: /foo/ #comment1");
+        $ret = $parser->parseLine("Disallow: /foo/ #comment1");
         $this->assertTrue($ret instanceof Line, var_export($ret,true));
         $this->assertEquals("comment1", $ret->getComment());
 
+        // nutch 
+        $parser->setConfig(array(
+               'space_as_separator' => true
+            )
+        );
 
-        $ret = TxtStringParser::parseLine("User-Agent: Agent1 Agent2 #comment2");
+        $ret = $parser->parseLine("User-Agent: Agent1 Agent2 #comment2");
         $this->assertInternalType('array', $ret);
         $agent1 = $ret[0];
         $agent2 = $ret[1];

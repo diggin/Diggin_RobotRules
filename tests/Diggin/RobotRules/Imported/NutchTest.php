@@ -11,7 +11,8 @@ class Digggin_RobotRules_Imported_NutchTest extends PHPUnit_Framework_TestCase
     protected function getParserResult($robotstxt)
     {
         //new Diggin\RobotRules\Parser\TxtParser($robotstxt[0]));
-        return Diggin\RobotRules\Parser\TxtStringParser::parse($robotstxt);
+        $config = array('space_as_separator' => true);
+        return Diggin\RobotRules\Parser\TxtStringParser::parse($robotstxt, $config);
     }
 
     public function testAcceptAll()
