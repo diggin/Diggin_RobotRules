@@ -110,7 +110,8 @@ class TxtAccepter implements Accepter
             // @todo unescape '?' '*'
             // str_replace(array('\?', '\*'), array('?', '*'), preg_quote($value));
             //if (preg_match('#^'. preg_quote($value) . '#', $path)) {
-            if (preg_match('#^'. str_replace(array('\?', '\*'), array('?', '*'), preg_quote($value)) . '#', $path)) {
+            //if (preg_match('#^'. str_replace(array('\?', '\*'), array('?', '*'), preg_quote($value)) . '#', $path)) {
+            if (preg_match('#^'. str_replace(array('\*'), array('*'), preg_quote($value)) . '#', $path)) {
                 $flag = $value;
             }
         }
