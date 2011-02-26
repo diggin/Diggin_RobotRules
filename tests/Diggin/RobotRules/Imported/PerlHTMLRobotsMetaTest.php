@@ -2,7 +2,7 @@
 
 namespace Diggin\RobotRules\Imported;
 
-use \Diggin\RobotRules\Parser\HtmlMeta\Adapter\DOMDocumentParser;
+use \Diggin\RobotRules\Parser\HtmlMeta\Adapter\DOMDocument;
 use \Diggin\RobotRules\Accepter\HtmlAccepter as Accepter;
 
 // imported from cpan's HTML-RobotsMETA 0.00003 t/02_parse.t
@@ -11,28 +11,8 @@ class PerlHTMLRobotsMetaTest extends \PHPUnit_Framework_TestCase
 
     public function parseHtml($html)
     {
-        return DOMDocumentParser::parseHtml($html);
+        return DOMDocument::parseHtml($html);
     }
-
-    // ->DOMDocuTest
-    public function testUpper()
-    {
-$html = <<<'EOM'
-<html>
-<head>
-    <meta name="http-equiv" content="text/html; charset=utf-8">
-    <meta name="roBots"     content="nofollow, noindex">
-</head>
-<body>
-    <div>hello, world</div>
-</body>
-</html>
-EOM;
-
-        $rule = $this->parseHtml($html);
-        $this->assertTrue($rule->hasContent('nofollow'));
-    }
-
 
     public function testNofollowNoindex()
     {
@@ -113,7 +93,6 @@ $html = <<<'EOM'
 </body>
 </html>
 EOM;
-
         $rule = $this->parseHtml($html);
         $accepter = new Accepter;
         $accepter->setRules($rule);
