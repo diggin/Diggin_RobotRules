@@ -1,5 +1,5 @@
 <?php
 namespace Diggin\RobotRules\Rules;
 
-interface Txt extends \Iterator
+interface Txt extends \Traversable
 {}

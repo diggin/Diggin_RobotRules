@@ -32,7 +32,6 @@ class RecordEntity implements \ArrayAccess
         unset($this->_fields[$offset]);
     }
 
-    /** Diggin_RobotRules_Protocol_Txt_line  **/
     public function append(Line $line)
     {
         if (array_key_exists($field = $line->getField(), $this->_fields)) {

@@ -2,7 +2,7 @@
 
 namespace Diggin\RobotRules\Rules;
 
-class TxtContainer implements Txt
+class TxtContainer implements \Iterator, Txt
 {
     private $records;
     private $position = 0;
