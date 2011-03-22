@@ -133,7 +133,7 @@ EOF;
             //echo $s[0], PHP_EOL;
             $accepter->setUserAgent('unhipbot');
 
-            if (($s[1] == 'Yes') ? true: false) {
+            if ((trim($s[1]) === 'Yes') ? true: false) {
                 $this->assertTrue($accepter->isAllow($s[0]));
             } else {
                 $this->assertFalse($accepter->isAllow($s[0]));
@@ -141,7 +141,7 @@ EOF;
 
             $accepter->setUserAgent('webcrawler');
 
-            if (($s[2] == 'Yes') ? true: false) {
+            if ((trim($s[2]) === 'Yes') ? true: false) {
                 $this->assertTrue($accepter->isAllow($s[0]));
             } else {
                 //var_dump($s[0]);
@@ -151,7 +151,7 @@ EOF;
 
             $accepter->setUserAgent('otherbot');
 
-            if (($s[3] == 'Yes') ? true: false) {
+            if ((trim($s[3]) === 'Yes') ? true: false) {
                 $this->assertTrue($accepter->isAllow($s[0]));
             } else {
                 $this->assertFalse($accepter->isAllow($s[0]));
