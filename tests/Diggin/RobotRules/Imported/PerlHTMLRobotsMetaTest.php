@@ -2,8 +2,8 @@
 
 namespace Diggin\RobotRules\Imported;
 
-use \Diggin\RobotRules\Parser\HtmlMeta\Adapter\DOMDocument;
-use \Diggin\RobotRules\Accepter\HtmlAccepter as Accepter;
+use Diggin\RobotRules\Parser\HtmlMeta\Adapter\DOMDocument;
+use Diggin\RobotRules\Accepter\HtmlAccepter as Accepter;
 
 // imported from cpan's HTML-RobotsMETA 0.00003 t/02_parse.t
 class PerlHTMLRobotsMetaTest extends \PHPUnit_Framework_TestCase

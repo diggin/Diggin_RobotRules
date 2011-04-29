@@ -2,7 +2,7 @@
 
 namespace Diggin\RobotRules\Parser\HtmlMeta\Adapter;
 
-require 'CommonTest.php';
+//require 'CommonTest.php';
 use \Diggin\RobotRules\Parser\HtmlMeta\Adapter\CommonTest;
 
 class DOMDocumentTest extends CommonTest
