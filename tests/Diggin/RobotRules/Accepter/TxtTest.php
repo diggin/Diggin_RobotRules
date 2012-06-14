@@ -10,7 +10,7 @@ use Diggin\RobotRules\Rules\Txt\LineEntity;
 class Diggin_RobotRules_Accepter_TxtTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @expectedException \Exception
+     * @expectedException \Diggin\RobotRules\Exception
      */
     public function testFailingInvalidArg()
     {
@@ -19,7 +19,7 @@ class Diggin_RobotRules_Accepter_TxtTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException \Diggin\RobotRules\Exception
      */
     public function testFailingIfRulesNotSet()
     {

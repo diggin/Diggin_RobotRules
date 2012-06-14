@@ -4,6 +4,7 @@ namespace Diggin\RobotRules\Accepter;
 use Diggin\RobotRules\Accepter;
 use Diggin\RobotRules\Rules\Txt as TxtRules;
 use Diggin\RobotRules\Rules\Txt\RecordEntity as Record;
+use Diggin\RobotRules\Exception;
 
 class TxtAccepter implements Accepter
 {
@@ -20,7 +21,6 @@ class TxtAccepter implements Accepter
             $path = $uri->getPath();
         } else if (is_string($uri)) {
             if (preg_match('#^http#', $uri)) {
-                require_once 'Zend/Uri.php';
                 $path = \Zend_Uri::factory($uri)->getPath();
             } else {
                 $path = $uri;
@@ -28,11 +28,11 @@ class TxtAccepter implements Accepter
         } else if (null === $uri && $this->getUserAgent() instanceof \Zend_Http_Client) {
             $path = $this->getUserAgent()->getUri()->getPath();
         } else {
-            throw new \Exception('$uri is not set');
+            throw new Exception\InvalidArgumentException('$uri is not set');
         }
 
         if (!$this->rules) {
-            throw new \Exception('robots.txt rule is not specified. Use setRules()');
+            throw new Exception\LogicException('robots.txt rule is not specified. Use setRules()');
         }
 
         // flag 

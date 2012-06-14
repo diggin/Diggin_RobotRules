@@ -4,8 +4,8 @@ Diggin_RobotRules - README
 TODOs & current status
 
 - implements http://www.robotstxt.org/norobots-rfc.txt
-    [DONE] "3.2.2 The Allow and Disallow lines" - as test-case
-    [DONE] "4.Examples" as test-case
+  [DONE] "3.2.2 The Allow and Disallow lines" - as test-case
+  [DONE] "4.Examples" as test-case
 
 - passing Nutch's test code
     [DONE]
