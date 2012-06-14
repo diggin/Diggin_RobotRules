@@ -4,9 +4,9 @@
 
 set_include_path(dirname(dirname(dirname(dirname(dirname(__FILE__))))).'/library/'. PATH_SEPARATOR. get_include_path());
 
-require_once 'Zend/Loader/Autoloader.php';
-Zend_Loader_Autoloader::getInstance()->setFallbackAutoloader(true);
-Zend_Loader_Autoloader::getInstance()->registerNamespace('Diggin');
+//require_once 'Zend/Loader/Autoloader.php';
+//Zend_Loader_Autoloader::getInstance()->setFallbackAutoloader(true);
+//Zend_Loader_Autoloader::getInstance()->registerNamespace('Diggin');
 
 
 $directory = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('.'));

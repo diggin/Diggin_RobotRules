@@ -2,7 +2,7 @@
 // only tests & demo
 
 $vendor = __DIR__.'/vendor';
-$library = __DIR__.'/library';
+$library = __DIR__.'/src';
 set_include_path($vendor.PATH_SEPARATOR.
                  $library.PATH_SEPARATOR.
                  get_include_path());
