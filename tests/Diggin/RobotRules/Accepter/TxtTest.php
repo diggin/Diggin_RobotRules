@@ -1,16 +1,20 @@
 <?php
 
+use Diggin\RobotRules\Accepter\TxtAccepter;
+use Diggin\RobotRules\Parser\TxtStringParser;
+use Diggin\RobotRules\Rules\Txt\RecordEntity;
+use Diggin\RobotRules\Rules\Txt\LineEntity;
+
 /**
  */
 class Diggin_RobotRules_Accepter_TxtTest extends PHPUnit_Framework_TestCase
 {
-    
     /**
      * @expectedException \Exception
      */
     public function testFailingInvalidArg()
     {
-        $accepter = new Diggin\RobotRules\Accepter\TxtAccepter(); 
+        $accepter = new TxtAccepter(); 
         $accepter->isAllow(false); 
     }
 
@@ -19,7 +23,7 @@ class Diggin_RobotRules_Accepter_TxtTest extends PHPUnit_Framework_TestCase
      */
     public function testFailingIfRulesNotSet()
     {
-        $accepter = new Diggin\RobotRules\Accepter\TxtAccepter(); 
+        $accepter = new TxtAccepter(); 
         $accepter->isAllow('http://example.com/'); 
     }
     
@@ -32,8 +36,8 @@ User-agent: *
 Disallow: /aaa/
 EOF;
 
-        $accepter = new Diggin\RobotRules\Accepter\TxtAccepter(); 
-        $accepter->setRules(Diggin\RobotRules\Parser\TxtStringParser::parse($txt));
+        $accepter = new TxtAccepter(); 
+        $accepter->setRules(TxtStringParser::parse($txt));
 
         $accepter->setUserAgent('webcrawler');
         $this->assertFalse($accepter->isAllow('/aaa/'));
@@ -80,9 +84,15 @@ EOF;
         $this->assertTrue($accepter->isAllow('/foo/bar/baz.html'));
 
     }
-        
 
-    public function testRobotstxtorg()
+    /**
+     * @group robotsrfc
+     * 
+     * This test for norobots-rfc.txt
+     * http://www.robotstxt.org/norobots-rfc.txt
+     *   4. Examples
+     */
+    public function testRobotstxtorgExamples()
     {
 
 // Record Path URL path Matches
@@ -122,7 +132,7 @@ http://www.fict.org/%7Ejim/jim.html          No       Yes       No
 http://www.fict.org/%7Emak/mak.html          No       Yes       Yes
 EOF;
 
-        $accepter = new Diggin\RobotRules\Accepter\TxtAccepter(); 
+        $accepter = new TxtAccepter(); 
 
         //$accepter->setRules(new Diggin\RobotRules\Parser\TxtParser($txt));
         $accepter->setRules(Diggin\RobotRules\Parser\TxtStringParser::parse($txt));
@@ -144,17 +154,15 @@ EOF;
             if ((trim($s[2]) === 'Yes') ? true: false) {
                 $this->assertTrue($accepter->isAllow($s[0]));
             } else {
-                //var_dump($s[0]);
                 $this->assertFalse($accepter->isAllow($s[0]));
             }
-
 
             $accepter->setUserAgent('otherbot');
 
             if ((trim($s[3]) === 'Yes') ? true: false) {
-                $this->assertTrue($accepter->isAllow($s[0]));
+                $this->assertTrue($accepter->isAllow($s[0]), $c);
             } else {
-                $this->assertFalse($accepter->isAllow($s[0]));
+                $this->assertFalse($accepter->isAllow($s[0]), $c);
             }
 
             //$accepter->setUserAgent('otherbot');
@@ -169,4 +177,86 @@ EOF;
         //die;
     }
 
+    /**
+     * @group robotsrfc
+     *
+     * This test for norobots-rfc.txt
+     * http://www.robotstxt.org/norobots-rfc.txt
+     *  3.2.2 The Allow and Disallow lines
+     */
+    public function testAllowDisallowLines()
+    {
+        $this->markTestIncomplete('a');
+
+        //Record Path        URL path         Matches
+$exmples = <<<EOF
+/tmp               /tmp               yes
+/tmp               /tmp.html          yes
+/tmp               /tmp/a.html        yes
+/tmp/              /tmp               no
+/tmp               /tmp               yes
+/tmp/              /tmp/              yes
+/tmp/              /tmp/a.html        yes
+/a%3cd.html        /a%3cd.html        yes
+/a%3Cd.html        /a%3cd.html        yes
+/a%3cd.html        /a%3Cd.html        yes
+/a%3Cd.html        /a%3Cd.html        yes
+/a%2fb.html        /a%2fb.html        yes
+/a%2fb.html        /a/b.html          no
+/a/b.html          /a%2fb.html        no
+/a/b.html          /a/b.html          yes
+/%7ejoe/index.html /~joe/index.html   yes
+/~joe/index.html   /%7Ejoe/index.html yes
+EOF;
+
+        $lines = explode("\n", $exmples);
+
+        $accepter = new TxtAccepter(); 
+
+        foreach ($lines as $line) {
+            $s = preg_split('/ +/', $line);
+            $disallow = $s[0];
+$txt = <<<ROBOTSTXT
+      User-agent: dummycrawler
+      Disallow: $disallow
+ROBOTSTXT;
+            $accepter->setRules(TxtStringParser::parse($txt));
+            $accepter->setUserAgent('dummycrawler');
+
+
+            if ((trim($s[2]) === 'Yes') ? true: false) {
+                $this->assertTrue($accepter->isAllow($s[1]), 'example line is '. $line. PHP_EOL .'robots.txt'.PHP_EOL.$txt);
+            } else {
+                $this->assertFalse($accepter->isAllow($s[1]), 'example line is '. $line. PHP_EOL .'robots.txt'.PHP_EOL.$txt);
+            }
+        }
+    }
+
+    /**
+     * @dataProvider decodeProvider
+     */
+    public function testDecode($record_path, $url_path, $expected)
+    {
+        $accepter = new ReflectionMethod('Diggin\RobotRules\Accepter\TxtAccepter', '_matchCheck');
+        $accepter->setAccessible(true);
+
+        $record = new RecordEntity;
+        $line = new LineEntity;
+        $line->setField('disallow');
+        $line->setValue($record_path);
+        $record->append($line);
+
+        $ret = $accepter->invoke(new TxtAccepter, 'disallow', $record, $url_path); 
+        $this->assertSame($expected, (boolean)$ret, $record_path. ' '. $url_path);
+    }
+
+    public function decodeProvider()
+    {
+        return array(
+            array('/a%2fb.html', '/a%2fb.html', true),             
+            array('/a%2fb.html', '/a/b.html', false),             
+            array('/a/b.html', '/a%2fb.html', false),             
+            array('/a/b.html', '/a/b.html', true),             
+        );
+    }
 }

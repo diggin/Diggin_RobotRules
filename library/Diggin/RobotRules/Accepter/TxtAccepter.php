@@ -1,6 +1,6 @@
 <?php
-
 namespace Diggin\RobotRules\Accepter;
+
 use Diggin\RobotRules\Accepter;
 use Diggin\RobotRules\Rules\Txt as TxtRules;
 use Diggin\RobotRules\Rules\Txt\RecordEntity as Record;
@@ -104,8 +104,9 @@ class TxtAccepter implements Accepter
                 if ($path === '/') return true;
             }
             
-            $value = urldecode($value);
-            $path = urldecode($path);
+            // "/" character, which has special meaning in a path.
+            $value = self::urldecodeWithSlashAsSpecial($value);
+            $path = self::urldecodeWithSlashAsSpecial($path);
 
             // @todo unescape '?' '*'
             // str_replace(array('\?', '\*'), array('?', '*'), preg_quote($value));
@@ -145,4 +146,10 @@ class TxtAccepter implements Accepter
         return $this->useragent;
     }
 
+    public static function urldecodeWithSlashAsSpecial($path)
+    {
+        return preg_replace_callback('/((?!(%2f)).)+/i',
+                              function($v){return rawurldecode($v[0]);},
+                              $path);
+    }
 }
