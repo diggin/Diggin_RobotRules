@@ -1,20 +1,19 @@
 <?php
 
+namespace DigginTests\RobotRules\Accepter;
+
 /**
  * a test
  * https://www.google.com/webmasters/tools/robots-analysis-ac?hl=ja&siteUrl=http://yoursite/
  */
-class Diggin_RobotRules_Accepter_TxtGoogleWebasterTest extends PHPUnit_Framework_TestCase
+class TxtGoogleWebasterTest extends \PHPUnit_Framework_TestCase
 {
     
     protected function getAccpeter($txt, $useragent = 'Googlebot')
     {
-    
-        $accepter = new Diggin\RobotRules\Accepter\TxtAccepter(); 
-        $accepter->setRules(Diggin\RobotRules\Parser\TxtStringParser::parse($txt));
-
+        $accepter = new \Diggin\RobotRules\Accepter\TxtAccepter(); 
+        $accepter->setRules(\Diggin\RobotRules\Parser\TxtStringParser::parse($txt));
         $accepter->setUserAgent($useragent);
-
         return $accepter;
     }
     
@@ -73,7 +72,8 @@ Allow: /index.htm$
 EOF;
 
         $this->assertFalse($this->getAccpeter($txt, 'Googlebot')->isAllow('/export01/'));
-        $this->assertFalse($this->getAccpeter($txt, 'Googlebot')->isAllow('/index.htm'));
+        $this->assertFalse($this->getAccpeter($txt, 'Googlebot')->isAllow('/index.php'), $txt);
+        $this->assertTrue($this->getAccpeter($txt, 'Googlebot')->isAllow('/index.htm'), $txt);
         $this->assertFalse($this->getAccpeter($txt, 'Googlebot')->isAllow('/index.html'));
     
     }

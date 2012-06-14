@@ -109,10 +109,12 @@ class TxtAccepter implements Accepter
             $path = self::urldecodeWithSlashAsSpecial($path);
 
             // @todo unescape '?' '*'
-            // str_replace(array('\?', '\*'), array('?', '*'), preg_quote($value));
-            //if (preg_match('#^'. preg_quote($value) . '#', $path)) {
-            //if (preg_match('#^'. str_replace(array('\?', '\*'), array('?', '*'), preg_quote($value)) . '#', $path)) {
-            if (preg_match('#^'. str_replace(array('\*'), array('*'), preg_quote($value)) . '#', $path)) {
+
+            // https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt 
+            // $ designates the end of the URL
+            $value_tmp = preg_replace('#^([^$]+\$?).*$#','$1',$value);
+
+            if (preg_match('#^'. str_replace(array('\*','\$'), array('*','$'), preg_quote($value_tmp)) . '#', $path)) {
                 $flag = $value;
             }
         }
