@@ -186,8 +186,6 @@ EOF;
      */
     public function testAllowDisallowLines()
     {
-        $this->markTestIncomplete('a');
-
         //Record Path        URL path         Matches
 $exmples = <<<EOF
 /tmp               /tmp               yes
@@ -224,10 +222,10 @@ ROBOTSTXT;
             $accepter->setUserAgent('dummycrawler');
 
 
-            if ((trim($s[2]) === 'Yes') ? true: false) {
+            if ((boolean)(trim($s[2]) !== 'yes')) {
                 $this->assertTrue($accepter->isAllow($s[1]), 'example line is '. $line. PHP_EOL .'robots.txt'.PHP_EOL.$txt);
             } else {
-                $this->assertFalse($accepter->isAllow($s[1]), 'example line is '. $line. PHP_EOL .'robots.txt'.PHP_EOL.$txt);
+                $this->assertFalse($accepter->isAllow($s[1]), ' example line is '. $line. PHP_EOL .'robots.txt'.PHP_EOL.$txt);
             }
         }
     }
