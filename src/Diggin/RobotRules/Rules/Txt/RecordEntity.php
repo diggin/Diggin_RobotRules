@@ -4,24 +4,24 @@ use Diggin\RobotRules\Rules\Txt\LineEntity as Line;
 
 class RecordEntity implements \ArrayAccess
 {
-    private $_fields = array();
+    private $fields = array();
     
     public function offsetExists($offset)
     {
-        return isset($this->_fields[strtolower($offset)]);
+        return isset($this->fields[strtolower($offset)]);
     }
 
     public function offsetSet($offset, $lines)
     {
-        $this->_fields[$offset] = $lines;
+        $this->fields[$offset] = $lines;
     }
 
     public function offsetGet($offset)
     {
         //@todo not strtowloer,CamelUppder
         
-        if (array_key_exists(strtolower($offset), $this->_fields)) {
-            return $this->_fields[strtolower($offset)];
+        if (array_key_exists(strtolower($offset), $this->fields)) {
+            return $this->fields[strtolower($offset)];
         } else {
             return null;
         }
@@ -29,15 +29,15 @@ class RecordEntity implements \ArrayAccess
 
     public function offsetUnset($offset)
     {
-        unset($this->_fields[$offset]);
+        unset($this->fields[$offset]);
     }
 
     public function append(Line $line)
     {
-        if (array_key_exists($field = $line->getField(), $this->_fields)) {
-            $this->_fields[$field][count($this->_fields[$field])] = $line;
+        if (array_key_exists($field = $line->getField(), $this->fields)) {
+            $this->fields[$field][count($this->fields[$field])] = $line;
         } else {
-            $this->_fields[$field][0] = $line;
+            $this->fields[$field][0] = $line;
         }
     }
 
@@ -46,7 +46,7 @@ class RecordEntity implements \ArrayAccess
      * but Allow & Disallow which not define sort
      * http://www.robotstxt.org/norobots-rfc.txt 3.2
      */
-    private function _fieldsort($x, $y)
+    private function fieldsort($x, $y)
     {
         if (strtolower($x) === 'user-agent') return -10;
         if (strtolower($y) === 'user-agent') return 10;
@@ -59,13 +59,18 @@ class RecordEntity implements \ArrayAccess
         return 0;
     }
 
-    public function __toString()
+    public function toString()
     {
         $fieldstring = "";
-        uksort($this->_fields, array($this, '_fieldsort'));
-        foreach ($this->_fields as $field) {
+        uksort($this->fields, array($this, 'fieldsort'));
+        foreach ($this->fields as $field) {
             $fieldstring .= implode("\n", $field);
         }
         return $fieldstring;
+    }
+
+    public function __toString()
+    {
+        return $this->toString();
     }
 }

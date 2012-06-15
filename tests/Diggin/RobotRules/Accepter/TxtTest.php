@@ -237,7 +237,7 @@ ROBOTSTXT;
      */
     public function testDecode($record_path, $url_path, $expected)
     {
-        $accepter = new ReflectionMethod('Diggin\RobotRules\Accepter\TxtAccepter', '_matchCheck');
+        $accepter = new ReflectionMethod('Diggin\RobotRules\Accepter\TxtAccepter', 'matchCheck');
         $accepter->setAccessible(true);
 
         $record = new RecordEntity;

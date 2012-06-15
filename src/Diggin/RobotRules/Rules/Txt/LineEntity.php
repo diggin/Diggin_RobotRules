@@ -6,43 +6,52 @@ class LineEntity
     //@see http://www.robotstxt.org/norobots-rfc.txt
     const EOL = "\r\n";
 
-    private $_field;
-    private $_value;
-    private $_comment;
-
-    // line separetor is CRLF
-    public function __toString()
-    {
-        return $this->getField().': '.$this->getValue().
-            (isset($this->_comment) ? ' # '.$this->getComment(): '').self::EOL;
-    }
+    private $field;
+    private $value;
+    private $comment;
 
     public function setField($field)
     {
-        $this->_field = $field;
+        $this->field = $field;
     }
+
     public function getField()
     {
-        if (isset($this->_field)) {
-            return $this->_field;
+        if (isset($this->field)) {
+            return $this->field;
         } else {
             return '';
         }
     }
     public function setValue($value)
     {
-        $this->_value = $value;
+        $this->value = $value;
     }
+
     public function getValue()
     {
-        return $this->_value;
+        return $this->value;
     }
+
     public function setComment($comment)
     {
-        $this->_comment = $comment;
+        $this->comment = $comment;
     }
+
     public function getComment()
     {
-        return $this->_comment;
+        return $this->comment;
+    }
+
+    // line separetor is CRLF
+    public function toString()
+    {
+        return $this->getField().': '.$this->getValue().
+            (isset($this->comment) ? ' # '.$this->getComment(): '').self::EOL;
+    }
+
+    public function __toString()
+    {
+        return $this->toString();
     }
 }

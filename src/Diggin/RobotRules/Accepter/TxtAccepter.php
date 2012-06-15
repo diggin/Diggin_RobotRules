@@ -56,8 +56,8 @@ class TxtAccepter
             }
 
             //match check
-            if ($d = $this->_matchCheck('disallow', $record, $path)) {
-                if ($a = $this->_matchCheck('allow', $record, $path)) {
+            if ($d = $this->matchCheck('disallow', $record, $path)) {
+                if ($a = $this->matchCheck('allow', $record, $path)) {
                     if (strlen($d) > strlen($a)) {
                         $allow = false;
                         continue;
@@ -79,7 +79,7 @@ class TxtAccepter
         return (strlen($a->getValue()) < strlen($b->getValue())) ? -1 : 1;
     }
     
-    protected function _matchCheck($field, Record $record, $path)
+    protected function matchCheck($field, Record $record, $path)
     {
         if ($path == '/robots.txt') {
             return (boolean) !($field == 'disallow');
