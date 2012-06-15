@@ -1,6 +1,8 @@
 Diggin_RobotRules
 =========================
 
+PHP parser/handler for Robots Exclusion Protocol (robots.txt and more..) 
+
 Master: [![Build Status](https://secure.travis-ci.org/diggin/Diggin_RobotRules.png?branch=master)](http://travis-ci.org/diggin/Diggin_RobotRules)
 
 
@@ -22,6 +24,35 @@ TODOs & current status
 - rewrite with PHPPEG.(because current preg* base parser makes difficulty.)
 - more test
 - refactoring on and on..
+
+USAGE
+-----
+``` php
+<?php
+use Diggin\RobotRules\Accepter\TxtAccepter;
+use Diggin\RobotRules\Parser\TxtStringParser;
+
+include 'vendor/autoload.php';
+
+$robotstxt = <<<'ROBOTS'
+# sample robots.txt
+User-agent: YourCrawlerName
+Disallow:
+
+User-agent: *
+Disallow: /aaa/ #comment
+ROBOTS;
+
+$accepter = new TxtAccepter;
+$accepter->setRules(TxtStringParser::parse($robotstxt));
+
+$accepter->setUserAgent('foo');
+var_dump($accepter->isAllow('/aaa/')); //false
+var_dump($accepter->isAllow('/b.html')); //true
+
+$accepter->setUserAgent('YourCrawlerName');
+var_dump($accepter->isAllow('/aaa/')); // true
+```
 
 INSTALL
 -------
