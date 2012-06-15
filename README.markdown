@@ -1,4 +1,4 @@
-Diggin_RobotRules - README
+Diggin_RobotRules
 =========================
 
 Master: [![Build Status](https://secure.travis-ci.org/diggin/Diggin_RobotRules.png?branch=master)](http://travis-ci.org/diggin/Diggin_RobotRules)
@@ -11,6 +11,7 @@ TODOs & current status
     - [DONE] "4.Examples" as test-case
 
 - passing Nutch's test code
+    [ref](https://github.com/apache/nutch/blob/trunk/src/plugin/lib-http/src/test/org/apache/nutch/protocol/http/api/TestRobotRulesParser.java)
     - [DONE] @see tests/Diggin/RobotRules/Imported/NutchTest.php
 
 - handle Crawl-Delay
@@ -21,3 +22,7 @@ TODOs & current status
 - rewrite with PHPPEG.(because current preg* base parser makes difficulty.)
 - more test
 - refactoring on and on..
+
+License
+-------
+Diggin_RobotRules is licensed under new-bsd.
