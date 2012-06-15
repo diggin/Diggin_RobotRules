@@ -1,5 +1,5 @@
 {
-    "name":"diggin/Diggin_RobotRules",
+    "name":"diggin/Diggin-RobotRules",
     "description":"componet for Robots Exclusion Protocol (robots.txt and more)",
     "version":"0.1.0",
     "type":"library",
