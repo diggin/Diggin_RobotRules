@@ -1,12 +1,11 @@
 <?php
 namespace Diggin\RobotRules\Accepter;
 
-use Diggin\RobotRules\Accepter;
 use Diggin\RobotRules\Rules\Txt as TxtRules;
 use Diggin\RobotRules\Rules\Txt\RecordEntity as Record;
 use Diggin\RobotRules\Exception;
 
-class TxtAccepter implements Accepter
+class TxtAccepter
 {
     /**
      * @var Diggin\RobotRules\Rules\Txt
