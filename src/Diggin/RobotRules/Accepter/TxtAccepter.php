@@ -119,19 +119,8 @@ class TxtAccepter
         return $flag;
     }
 
-    public function setRules($rules)
+    public function setRules(TxtRules $rules)
     {
-        // treat as robots.txt string or file
-        if (is_string($rules)) {
-            // @todo handle robots.txt as filepass
-
-            $rules = new Diggin\RobotRules\Parser\TxtParser($rules);
-        }
-
-        if (!($rules instanceof TxtRules)) {
-            throw new \Exception();
-        }
-
         $this->rules = $rules;
     }
 
