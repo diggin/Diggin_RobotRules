@@ -119,7 +119,6 @@ class TxtStringParser
      */ 
     public function parseLine($line)
     {        
-        // @todo write unit-test
         // start with comment?
         if (preg_match('!^\s*#!', $line)) {
             return false;    
