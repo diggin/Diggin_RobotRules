@@ -23,6 +23,24 @@ TODOs & current status
 - more test
 - refactoring on and on..
 
+INSTALL
+-------
+Diggin_RobotRules is following PSR-0,
+so to register namespace Diggin\RobotRules into your ClassLoader.
+
+several way to install.
+- pear package (coming soon..)
+- $php composer.phar install
+- write dependency for your composer.json
+
+```
+{
+    "require": {
+        "diggin/Diggin_RobotRules": "dev-master"
+    }
+}
+```
+
 License
 -------
 Diggin_RobotRules is licensed under new-bsd.
