@@ -1,11 +1,10 @@
 {
     "name":"diggin/Diggin-RobotRules",
-    "description":"componet for Robots Exclusion Protocol (robots.txt and more)",
-    "version":"0.1.0",
+    "description":"parser/handler for Robots Exclusion Protocol (robots.txt and more)",
     "type":"library",
     "keywords" : [
         "robots.txt",
-        "meta-robots",
+        "robots",
         "crawler",
         "spider"
     ],
