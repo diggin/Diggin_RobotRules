@@ -1,6 +1,8 @@
 <?php
 
-namespace Diggin\RobotRules\Imported;
+namespace DigginTests\RobotRules\Imported;
+
+use Diggin\RobotRules\Parser\TxtStringParser;
 
 /**
  * This file is borrowed Apache's Nutch test.
@@ -12,9 +14,8 @@ class NutchTest extends \PHPUnit_Framework_TestCase
     
     protected function getParserResult($robotstxt)
     {
-        //new Diggin\RobotRules\Parser\TxtParser($robotstxt[0]));
         $config = array('space_as_separator' => true);
-        return \Diggin\RobotRules\Parser\TxtStringParser::parse($robotstxt, $config);
+        return TxtStringParser::parse($robotstxt, $config);
     }
 
     public function testAcceptAll()

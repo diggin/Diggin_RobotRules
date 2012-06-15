@@ -1,5 +1,8 @@
 <?php
 
+namespace DigginTests\RobotRules\Accepter;
+
+use ReflectionMethod;
 use Diggin\RobotRules\Accepter\TxtAccepter;
 use Diggin\RobotRules\Parser\TxtStringParser;
 use Diggin\RobotRules\Rules\Txt\RecordEntity;
@@ -7,7 +10,7 @@ use Diggin\RobotRules\Rules\Txt\LineEntity;
 
 /**
  */
-class Diggin_RobotRules_Accepter_TxtTest extends PHPUnit_Framework_TestCase
+class TxtTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @expectedException \Diggin\RobotRules\Exception
@@ -51,7 +54,7 @@ Disallow:
 User-agent: *
 Disallow: /aaa/
 EOF;
-        $accepter->setRules(Diggin\RobotRules\Parser\TxtStringParser::parse($txt));
+        $accepter->setRules(TxtStringParser::parse($txt));
 
         $accepter->setUserAgent('webcrawler');
         $this->assertTrue($accepter->isAllow('/bb/'));
@@ -75,8 +78,8 @@ User-agent: *
 Disallow: /foo/bar/
 EOF;
 
-        $accepter = new Diggin\RobotRules\Accepter\TxtAccepter(); 
-        $accepter->setRules(Diggin\RobotRules\Parser\TxtStringParser::parse($txt));
+        $accepter = new TxtAccepter(); 
+        $accepter->setRules(TxtStringParser::parse($txt));
 
         $accepter->setUserAgent('Googlebot');
         $this->assertFalse($accepter->isAllow('/test/1.jpg'));
@@ -134,8 +137,7 @@ EOF;
 
         $accepter = new TxtAccepter(); 
 
-        //$accepter->setRules(new Diggin\RobotRules\Parser\TxtParser($txt));
-        $accepter->setRules(Diggin\RobotRules\Parser\TxtStringParser::parse($txt));
+        $accepter->setRules(TxtStringParser::parse($txt));
         $checks = explode("\n", $check);
         foreach ($checks as $c) {
             $s = preg_split('/ +/', $c);

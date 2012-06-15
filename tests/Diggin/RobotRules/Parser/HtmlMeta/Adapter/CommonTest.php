@@ -1,6 +1,5 @@
 <?php
-
-namespace Diggin\RobotRules\Parser\HtmlMeta\Adapter;
+namespace DigginTests\RobotRules\Parser\HtmlMeta\Adapter;
 
 abstract class CommonTest extends \PHPUnit_Framework_TestCase
 {

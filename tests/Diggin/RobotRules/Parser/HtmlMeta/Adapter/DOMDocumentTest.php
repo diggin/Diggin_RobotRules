@@ -1,11 +1,10 @@
 <?php
 
-namespace Diggin\RobotRules\Parser\HtmlMeta\Adapter;
+namespace DigginTests\RobotRules\Parser\HtmlMeta\Adapter;
 
-//require 'CommonTest.php';
-use \Diggin\RobotRules\Parser\HtmlMeta\Adapter\CommonTest;
+use Diggin\RobotRules\Parser\HtmlMeta\Adapter\DOMDocument;
 
-class DOMDocumentTest extends CommonTest
+class DOMDocumentTest extends \PHPUnit_Framework_Testcase
 {
     protected $parser = 'DOMDocument';
 
@@ -34,9 +33,7 @@ a
 HTML;
         $ret = $this->parseHtml($html);
         $this->assertInstanceof('Diggin\RobotRules\Rules\HtmlMetaRobots', $ret);
-
     }
-
 
     public function testUpper()
     {
@@ -55,6 +52,4 @@ EOM;
         $rule = $this->parseHtml($html);
         $this->assertTrue($rule->hasContent('nofollow'));
     }
-
-
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Diggin\RobotRules\Imported;
+namespace DigginTests\RobotRules\Imported;
 
 use Diggin\RobotRules\Parser\HtmlMeta\Adapter\DOMDocument;
 use Diggin\RobotRules\Accepter\HtmlAccepter as Accepter;

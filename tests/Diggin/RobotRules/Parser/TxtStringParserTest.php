@@ -1,8 +1,9 @@
 <?php
-namespace Diggin\RobotRules\Parser;
+namespace DigginTests\RobotRules\Parser;
+
+use Diggin\RobotRules\Parser\TxtStringParser;
 use Diggin\RobotRules\Rules\Txt\LineEntity as Line;
 use Diggin\RobotRules\Rules\Txt\SpecifiedFieldValueIterator;
-
 
 class TxtStringParserTest extends \PHPUnit_Framework_TestCase
 {

@@ -1,5 +1,7 @@
 <?php
-namespace Diggin\RobotRules\Parser;
+namespace DigginTests\RobotRules\Parser;
+
+use Diggin\RobotRules\Parser\HtmlMeta;
 
 /**
  */
@@ -18,5 +20,4 @@ class HtmlMetaTest extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
     }
-
 }
