@@ -24,8 +24,6 @@ class TxtAccepter
             } else {
                 $path = $uri;
             }
-        } else if (null === $uri && $this->getUserAgent() instanceof \Zend_Http_Client) {
-            $path = $this->getUserAgent()->getUri()->getPath();
         } else {
             throw new Exception\InvalidArgumentException('$uri is not set');
         }
