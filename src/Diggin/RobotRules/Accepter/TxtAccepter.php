@@ -20,7 +20,7 @@ class TxtAccepter
             $path = $uri->getPath();
         } else if (is_string($uri)) {
             if (preg_match('#^http#', $uri)) {
-                $path = \Zend_Uri::factory($uri)->getPath();
+                $path = $this->fetchPathFromUri($uri);
             } else {
                 $path = $uri;
             }
@@ -139,5 +139,14 @@ class TxtAccepter
         return preg_replace_callback('/((?!(%2f)).)+/i',
                               function($v){return rawurldecode($v[0]);},
                               $path);
+    }
+
+    /**
+     * @todo enable using Zend\Uri, Zend_Uri, Net_URL2 for strict parsing uri
+     */
+    protected function fetchPathFromUri($uri)
+    {
+        $parse_url = parse_url($uri);
+        return $parse_url['path'];
     }
 }
