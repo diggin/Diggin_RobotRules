@@ -1,0 +1,27 @@
+{
+    "name":"diggin/Diggin_RobotRules",
+    "description":"componet for Robots Exclusion Protocol (robots.txt and more)",
+    "version":"0.1.0",
+    "type":"library",
+    "keywords" : [
+        "robots.txt",
+        "meta-robots",
+        "crawler",
+        "spider"
+    ],
+    "license":"BSD-3-Clause",
+    "authors":[
+        {
+            "name":"sasezaki",
+            "email":"sasezaki@gmail.com"
+        }
+    ],
+    "require":{
+        "php":">=5.3.4"
+    },
+    "autoload": {
+        "psr-0":{
+            "Diggin\\RobotRules":"src/"
+        }
+    }
+}
