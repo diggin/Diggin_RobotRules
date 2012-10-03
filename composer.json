@@ -1,9 +1,9 @@
 {
-    "name":"diggin/Diggin-RobotRules",
+    "name":"diggin/diggin-robotrules",
     "description":"parser/handler for Robots Exclusion Protocol (robots.txt and more)",
     "type":"library",
     "keywords" : [
-        "robots.txt",
+        "robotstxt",
         "robots",
         "crawler",
         "spider"
