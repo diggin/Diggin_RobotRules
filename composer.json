@@ -18,6 +18,9 @@
     "require":{
         "php":">=5.3.4"
     },
+    "require-dev": {
+        "zendframework/zend-uri": "2.2.*"
+    },
     "autoload": {
         "psr-0":{
             "Diggin\\RobotRules":"src/"

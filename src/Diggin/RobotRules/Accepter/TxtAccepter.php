@@ -16,9 +16,7 @@ class TxtAccepter
 
     public function isAllow($uri = null)
     {
-        if ($uri instanceof \Zend_Uri_Http) {
-            $path = $uri->getPath();
-        } else if (is_string($uri)) {
+        if (is_string($uri)) {
             if (preg_match('#^http#', $uri)) {
                 $path = $this->fetchPathFromUri($uri);
             } else {

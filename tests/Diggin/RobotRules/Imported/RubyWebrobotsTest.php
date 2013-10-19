@@ -4,8 +4,7 @@ namespace Diggin\RobotRules\Impoted;
 
 use Diggin\RobotRules\Accepter\TxtAccepter;
 use Diggin\RobotRules\Parser\TxtStringParser;
-use Zend_Uri as Uri;
-    //Zend_Uri_Http as Http;
+use Zend\Uri\UriFactory;
 
 /**
  * This file is borrowed ruby's webrobots test.
@@ -52,7 +51,7 @@ class RubyWebrobotsTest extends \PHPUnit_Framework_TestCase
         return array(
           array('GoodBot','http://www.example.org/2heavy/index.php', false),
           array('GoodBot','http://www.example.org/2HEAVY/index.php', true),
-          array('GoodBot', Uri::factory('http://www.example.org/2heavy/index.php'), false),
+          array('GoodBot', UriFactory::factory('http://www.example.org/2heavy/index.php'), false),
           array('GoodBot','http://www.example.org/2heavy/index.html', true),
           array('GoodBot','http://www.Example.Org/2heavy/index.html', true),
           array('GoodBot','http://www.example.org/2heavy/index.htm', false),
@@ -65,7 +64,7 @@ class RubyWebrobotsTest extends \PHPUnit_Framework_TestCase
      */
     public function findRule($url)
     {
-        $url = \Zend_Uri::factory($url);
+        $url = UriFactory::factory($url);
         $url->setHost(strtolower($url->getHost()));
         $url->setPath('/robots.txt');
         return $this->getRule((string)$url);
