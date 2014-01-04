@@ -65,7 +65,7 @@ several way to install.
 ```
 {
     "require": {
-        "diggin/Diggin_RobotRules": "dev-master"
+       "diggin/diggin-robotrules": "dev-master"
     }
 }
 ```
