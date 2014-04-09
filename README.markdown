@@ -4,6 +4,7 @@ Diggin_RobotRules
 PHP parser/handler for Robots Exclusion Protocol (robots.txt and more..) 
 
 Master: [![Build Status](https://secure.travis-ci.org/diggin/Diggin_RobotRules.png?branch=master)](http://travis-ci.org/diggin/Diggin_RobotRules)
+[![Coverage Status](https://coveralls.io/repos/diggin/Diggin_RobotRules/badge.png)](https://coveralls.io/r/diggin/Diggin_RobotRules)
 
 Features
 --------

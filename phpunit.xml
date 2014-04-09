@@ -1,0 +1,10 @@
+<phpunit bootstrap="./tests/bootstrap.php" colors="true">
+    <testsuite name="Diggin_RobotRules Test Suite">
+        <directory>./tests/</directory>
+    </testsuite>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./src/</directory>
+        </whitelist>
+    </filter>
+</phpunit>
