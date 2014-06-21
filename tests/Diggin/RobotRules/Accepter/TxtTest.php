@@ -259,4 +259,20 @@ ROBOTSTXT;
             array('/a/b.html', '/a/b.html', true),             
         );
     }
+
+    public function testWildcardShouldMatch()
+    {
+        $accepter = new ReflectionMethod('Diggin\RobotRules\Accepter\TxtAccepter', 'matchCheck');
+        $accepter->setAccessible(true);
+
+        $record = new RecordEntity;
+        $line = new LineEntity;
+        $line->setField('disallow');
+        $line->setValue($record_path = '/compare/*/apply*');
+        $record->append($line);
+
+        $match = $accepter->invoke(new TxtAccepter, 'disallow', $record, $path = '/compare/*/apply*'); 
+        $this->assertTrue((boolean)$match, $record_path. ' '. $path);
+    }
+
 }

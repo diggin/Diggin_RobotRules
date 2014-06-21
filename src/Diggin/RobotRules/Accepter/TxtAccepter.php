@@ -109,7 +109,7 @@ class TxtAccepter
             // $ designates the end of the URL
             $value_tmp = preg_replace('#^([^$]+\$?).*$#','$1',$value);
 
-            if (preg_match('#^'. str_replace(array('\*','\$'), array('*','$'), preg_quote($value_tmp)) . '#', $path)) {
+            if (preg_match('#^'. str_replace(array('\*','\$'), array('.*','$'), preg_quote($value_tmp)) . '#', $path)) {
                 $flag = $value;
             }
         }
