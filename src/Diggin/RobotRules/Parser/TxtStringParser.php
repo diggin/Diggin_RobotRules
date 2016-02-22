@@ -49,7 +49,9 @@ class TxtStringParser
             $lineno++;
             
             if (!$line) {
-                $previous_line = false;
+                if ($line === false) {
+                    $previous_line = false;
+                }
                 continue;
             }
             
@@ -115,13 +117,13 @@ class TxtStringParser
      * parse a line
      *
      * @param string $line
-     * @return Line|array|false
+     * @return Line|array|null|false
      */ 
     public function parseLine($line)
     {        
         // start with comment?
         if (preg_match('!^\s*#!', $line)) {
-            return false;    
+            return null;    
         }
 
         preg_match('!\s*([^:]*):\s*([^#]*)\s*#*\s*([^\z]*)!i', 

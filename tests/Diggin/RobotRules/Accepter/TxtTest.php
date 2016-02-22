@@ -58,6 +58,19 @@ EOF;
 
         $accepter->setUserAgent('webcrawler');
         $this->assertTrue($accepter->isAllow('/bb/'));
+
+$txt = <<<EOF
+User-agent: webcrawler
+#comment
+User-agent: Googlebot
+#comment
+Disallow: /test
+EOF;
+        $accepter->setRules(TxtStringParser::parse($txt));
+
+        $accepter->setUserAgent('webcrawler');
+        $this->assertFalse($accepter->isAllow('/test/'));
+
     }
 
     public function testMultiUseragentSet()
