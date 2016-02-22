@@ -43,9 +43,9 @@ class TxtAccepter
             }
 
             //record has some user-agents
-            foreach ($useragents as &$u) $u = $u->getValue(); unset($u);
+            foreach ($useragents as &$u) $u = strtolower($u->getValue()); unset($u);
 
-            if (in_array($this->getUserAgent(), $useragents)) {
+            if (in_array(strtolower($this->getUserAgent()), $useragents)) {
                 $ua = $this->getUserAgent();
             } else if (in_array('*', $useragents)) {
                 if (isset($ua)) continue;

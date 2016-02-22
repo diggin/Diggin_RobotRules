@@ -88,6 +88,26 @@ EOF;
 
     }
 
+    public function testUserAgentCaseInsensitive()
+    {
+
+$txt = <<<EOF
+User-agent: Googlebot
+Disallow: /test/
+
+User-agent: *
+Disallow: /foo/bar/
+EOF;
+
+        $accepter = new TxtAccepter(); 
+        $accepter->setRules(TxtStringParser::parse($txt));
+
+        $accepter->setUserAgent('googleBot');
+        $this->assertFalse($accepter->isAllow('/test/1.jpg'));
+        $this->assertTrue($accepter->isAllow('/foo/bar/baz.html'));
+
+    }
+
     /**
      * @group robotsrfc
      * 
