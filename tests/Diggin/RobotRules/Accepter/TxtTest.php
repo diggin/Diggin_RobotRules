@@ -308,4 +308,40 @@ ROBOTSTXT;
         $this->assertTrue((boolean)$match, $record_path. ' '. $path);
     }
 
+    public function testSpecialChar()
+    {
+
+$txt = <<<EOF
+User-agent: *
+Disallow: /%23
+EOF;
+
+        $accepter = new TxtAccepter(); 
+        $accepter->setRules(TxtStringParser::parse($txt));
+
+        $accepter->setUserAgent('*');
+        $this->assertFalse($accepter->isAllow('/%23'));
+
+    }
+
+    public function testWildcardLong()
+    {
+
+$txt = <<<EOF
+User-agent: *
+Disallow: /****************************************.php
+Disallow: /*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/test
+EOF;
+
+        $accepter = new TxtAccepter();
+        $accepter->setRules(TxtStringParser::parse($txt));
+
+        $accepter->setUserAgent('Googlebot');
+        $this->assertFalse($accepter->isAllow('/12345678901234567890.php'));
+        $this->assertTrue($accepter->isAllow('/12345678901234567890.ini'));
+        $this->assertFalse($accepter->isAllow('/1/2/3/4/5/6/7/8/9/0/1/2/3/4/5/6/7/8/9/0/test'));
+        $this->assertTrue($accepter->isAllow('/1/2/3/4/5/6/7/8/9/0/1/2/3/4/5/6/7/8/9/0/teest'));
+
+    }
+
 }
