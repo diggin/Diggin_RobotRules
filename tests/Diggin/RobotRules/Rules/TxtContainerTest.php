@@ -67,7 +67,8 @@ class TxtContainerTest extends \PHPUnit_Framework_TestCase
 
         $records = iterator_to_array($txt);
         end($records);
-        $lines = current($records)['user-agent'];
+        $record = current($records);
+        $lines = $record['user-agent'];
         $line = current($lines);
         $this->assertEquals('*', $line->getValue());
     }
