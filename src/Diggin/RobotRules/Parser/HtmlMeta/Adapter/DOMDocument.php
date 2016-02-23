@@ -31,6 +31,8 @@ class DOMDocument extends AbstractAdapter
         $domNodeList = $domXpath->query('//meta[php:functionString("strtolower", @name) = "robots"]');
 
         $robots = new HtmlMetaRobots;
+
+        /** @var \DOMElement $domElement */
         foreach ($domNodeList as $domElement) {
             if ($domElement->hasAttribute('content')) {
                 $contents = preg_split('#,#', $domElement->getAttribute('content'));

@@ -7,6 +7,9 @@ namespace Diggin\RobotRules\Accepter;
  */
 class HtmlAccepter
 {
+    /**
+     * @var \Diggin\RobotRules\Rules\HtmlMetaRobots
+     */
     private $rules;
 
     public function setRules($rules)
