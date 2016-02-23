@@ -13,13 +13,11 @@ class RecordEntity implements \ArrayAccess
 
     public function offsetSet($offset, $lines)
     {
-        $this->fields[$offset] = $lines;
+        $this->fields[strtolower($offset)] = $lines;
     }
 
     public function offsetGet($offset)
     {
-        //@todo not strtowloer,CamelUppder
-        
         if (array_key_exists(strtolower($offset), $this->fields)) {
             return $this->fields[strtolower($offset)];
         } else {
@@ -34,7 +32,8 @@ class RecordEntity implements \ArrayAccess
 
     public function append(Line $line)
     {
-        if (array_key_exists($field = $line->getField(), $this->fields)) {
+        $field = strtolower($line->getField());
+        if (array_key_exists($field, $this->fields)) {
             $this->fields[$field][count($this->fields[$field])] = $line;
         } else {
             $this->fields[$field][0] = $line;
@@ -48,12 +47,12 @@ class RecordEntity implements \ArrayAccess
      */
     private function fieldsort($x, $y)
     {
-        if (strtolower($x) === 'user-agent') return -10;
-        if (strtolower($y) === 'user-agent') return 10;
+        if ($x === 'user-agent') return -10;
+        if ($y === 'user-agent') return 10;
 
-        if (strtolower($x) === 'disallow' && strtolower($y) == 'allow') {
+        if ($x === 'disallow' && $y == 'allow') {
             return -1;
-        } else if (strtolower($x) === 'allow' && strtolower($y) == 'disallow') {
+        } else if ($x === 'allow' && $y == 'disallow') {
             return 1;
         }
         return 0;
