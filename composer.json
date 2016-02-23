@@ -5,6 +5,7 @@
     "keywords" : [
         "robotstxt",
         "robots",
+        "robots.txt",
         "crawler",
         "spider"
     ],
@@ -20,12 +21,12 @@
     },
     "require-dev": {
         "zendframework/zend-uri": "~2.3",
-        "phpunit/phpunit": "~3.7",
+        "phpunit/phpunit": "~4.8",
         "satooshi/php-coveralls": "~0.6"
     },
     "autoload": {
-        "psr-0":{
-            "Diggin\\RobotRules":"src/"
+        "psr-4":{
+            "Diggin\\RobotRules\\":"src/Diggin/RobotRules/"
         }
     }
 }
