@@ -3,12 +3,13 @@ namespace Diggin\RobotRules\Accepter;
 
 use Diggin\RobotRules\Rules\Txt as TxtRules;
 use Diggin\RobotRules\Rules\Txt\RecordEntity as Record;
+use Diggin\RobotRules\Rules\Txt\LineEntity as Line;
 use Diggin\RobotRules\Exception;
 
 class TxtAccepter
 {
     /**
-     * @var Diggin\RobotRules\Rules\Txt
+     * @var \Diggin\RobotRules\Txt
      */
     private $rules;
 
@@ -72,7 +73,7 @@ class TxtAccepter
         return $allow;
     }
     
-    private function _sort($a, $b)
+    private function _sort(Line $a, Line $b)
     {
         return (strlen($a->getValue()) < strlen($b->getValue())) ? -1 : 1;
     }
@@ -90,6 +91,7 @@ class TxtAccepter
         $recfield = $record[$field];
         usort($recfield, array($this, '_sort'));
 
+        /** @var Line $line */
         foreach ($recfield as $line) {
             $value = $line->getValue();
 
