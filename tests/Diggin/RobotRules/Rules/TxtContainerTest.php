@@ -42,5 +42,35 @@ class TxtContainerTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals('/test'.$key, $disallow->getValue());
         }
     }
+
+    public function testWildcardRecordShouldAcceptedLastly()
+    {
+        $expected_useragent = 'Googlebot';
+
+        $record1 = new Record();
+        $record1->append($this->makeLine('User-agent', '*'));
+        $record1->append($this->makeLine('disallow', '/foo/bar/'));
+
+
+        $record2 = new Record();
+        $record2->append($this->makeLine('User-agent', $expected_useragent));
+        $record2->append($this->makeLine('disallow', '/test/'));
+
+        $txt = new TxtContainer(array($record1, $record2));
+        /** @var Record $record */
+        $record = $txt->current();
+        $this->assertInstanceOf('Diggin\\RobotRules\\Rules\Txt\\LineEntity', $record['user-agent'][0]);
+
+        // @todo
+        // $this->assertEquals($expected_useragent, $record['user-agent']);
+    }
+
+    protected function makeLine($field, $value)
+    {
+        $line = new Line;
+        $line->setField($field);
+        $line->setValue($value);
+        return $line;
+    }
 }
 

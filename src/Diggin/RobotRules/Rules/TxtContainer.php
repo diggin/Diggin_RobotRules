@@ -2,6 +2,7 @@
 
 namespace Diggin\RobotRules\Rules;
 
+use Diggin\RobotRules\Rules\Txt\RecordEntity;
 use Iterator;
 
 class TxtContainer implements Iterator, Txt
@@ -10,13 +11,16 @@ class TxtContainer implements Iterator, Txt
     private $position = 0;
     
     /**
-     * @param Traversble|array
+     * @param array
      */
     public function __construct($records)
     {
         $this->records = $records;
     }
 
+    /**
+     * @return RecordEntity
+     */
     public function current()
     {
         return current($this->records);
