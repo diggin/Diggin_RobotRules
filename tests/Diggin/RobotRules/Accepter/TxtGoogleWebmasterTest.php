@@ -22,7 +22,7 @@ class TxtGoogleWebasterTest extends \PHPUnit_Framework_TestCase
 $txt = <<<EOF
 User-agent: Googlebot-Mobile
 Disallow: /path/
-# aa
+
 User-agent: Googlebot
 Disallow: /foo/bar/
 EOF;

@@ -58,6 +58,19 @@ EOF;
 
         $accepter->setUserAgent('webcrawler');
         $this->assertTrue($accepter->isAllow('/bb/'));
+
+$txt = <<<EOF
+User-agent: webcrawler
+#comment
+User-agent: Googlebot
+#comment
+Disallow: /test
+EOF;
+        $accepter->setRules(TxtStringParser::parse($txt));
+
+        $accepter->setUserAgent('webcrawler');
+        $this->assertFalse($accepter->isAllow('/test/'));
+
     }
 
     public function testMultiUseragentSet()
@@ -84,6 +97,26 @@ EOF;
         $accepter->setUserAgent('Googlebot');
         $this->assertFalse($accepter->isAllow('/test/1.jpg'));
         $this->assertFalse($accepter->isAllow('/foo/baz/baz.html'));
+        $this->assertTrue($accepter->isAllow('/foo/bar/baz.html'));
+
+    }
+
+    public function testUserAgentCaseInsensitive()
+    {
+
+$txt = <<<EOF
+User-agent: Googlebot
+Disallow: /test/
+
+User-agent: *
+Disallow: /foo/bar/
+EOF;
+
+        $accepter = new TxtAccepter(); 
+        $accepter->setRules(TxtStringParser::parse($txt));
+
+        $accepter->setUserAgent('googleBot');
+        $this->assertFalse($accepter->isAllow('/test/1.jpg'));
         $this->assertTrue($accepter->isAllow('/foo/bar/baz.html'));
 
     }
@@ -273,6 +306,42 @@ ROBOTSTXT;
 
         $match = $accepter->invoke(new TxtAccepter, 'disallow', $record, $path = '/compare/*/apply*'); 
         $this->assertTrue((boolean)$match, $record_path. ' '. $path);
+    }
+
+    public function testSpecialChar()
+    {
+
+$txt = <<<EOF
+User-agent: *
+Disallow: /%23
+EOF;
+
+        $accepter = new TxtAccepter(); 
+        $accepter->setRules(TxtStringParser::parse($txt));
+
+        $accepter->setUserAgent('*');
+        $this->assertFalse($accepter->isAllow('/%23'));
+
+    }
+
+    public function testWildcardLong()
+    {
+
+$txt = <<<EOF
+User-agent: *
+Disallow: /****************************************.php
+Disallow: /*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/test
+EOF;
+
+        $accepter = new TxtAccepter();
+        $accepter->setRules(TxtStringParser::parse($txt));
+
+        $accepter->setUserAgent('Googlebot');
+        $this->assertFalse($accepter->isAllow('/12345678901234567890.php'));
+        $this->assertTrue($accepter->isAllow('/12345678901234567890.ini'));
+        $this->assertFalse($accepter->isAllow('/1/2/3/4/5/6/7/8/9/0/1/2/3/4/5/6/7/8/9/0/test'));
+        $this->assertTrue($accepter->isAllow('/1/2/3/4/5/6/7/8/9/0/1/2/3/4/5/6/7/8/9/0/teest'));
+
     }
 
 }

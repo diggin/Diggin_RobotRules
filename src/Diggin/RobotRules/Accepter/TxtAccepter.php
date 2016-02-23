@@ -43,9 +43,9 @@ class TxtAccepter
             }
 
             //record has some user-agents
-            foreach ($useragents as &$u) $u = $u->getValue(); unset($u);
+            foreach ($useragents as &$u) $u = strtolower($u->getValue()); unset($u);
 
-            if (in_array($this->getUserAgent(), $useragents)) {
+            if (in_array(strtolower($this->getUserAgent()), $useragents)) {
                 $ua = $this->getUserAgent();
             } else if (in_array('*', $useragents)) {
                 if (isset($ua)) continue;
@@ -109,7 +109,7 @@ class TxtAccepter
             // $ designates the end of the URL
             $value_tmp = preg_replace('#^([^$]+\$?).*$#','$1',$value);
 
-            if (preg_match('#^'. str_replace(array('\*','\$'), array('.*','$'), preg_quote($value_tmp)) . '#', $path)) {
+            if (preg_match('#^'. str_replace(array('\*','\$'), array('.*?','$'), preg_quote($value_tmp, '#')) . '#', $path)) {
                 $flag = $value;
             }
         }
