@@ -7,6 +7,8 @@ use Diggin\RobotRules\Rules\TxtContainer;
 
 class TxtStringParser
 {
+    const LINE_COMMENT_ONLY = null;
+
     protected $config = array(
         'space_as_separator' => false
     );
@@ -123,7 +125,7 @@ class TxtStringParser
     {        
         // start with comment?
         if (preg_match('!^\s*#!', $line)) {
-            return null;    
+            return static::LINE_COMMENT_ONLY;
         }
 
         preg_match('!\s*([^:]*):\s*([^#]*)\s*#*\s*([^\z]*)!i', 
