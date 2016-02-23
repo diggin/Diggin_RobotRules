@@ -1,5 +1,6 @@
 <?php
 namespace Diggin\RobotRules\Rules;
+
 use Diggin\RobotRules\Rules\Txt\RecordEntity as Record;
 use Diggin\RobotRules\Rules\Txt\LineEntity as Line;
 
@@ -8,7 +9,7 @@ class TxtContainerTest extends \PHPUnit_Framework_TestCase
     public function testStandardSet()
     {
         $txt = new TxtContainer(array());
-        $this->assertFalse($txt->current());
+        $this->assertNull($txt->current());
 
         $lineAgent = new Line;
         $lineAgent->setField('User-agent');
@@ -33,7 +34,7 @@ class TxtContainerTest extends \PHPUnit_Framework_TestCase
         $lineDisallow1->setValue('/test1');
         $record2->append($lineDisallow1);
 
-        $txt = new TxtContainer(array($record, $record2));
+        $txt = new TxtContainer(array($record2, $record));
 
         foreach ($txt as $key => $record) {
             $this->assertInstanceof('\\Diggin\\RobotRules\\Rules\\Txt\\RecordEntity', $record);
@@ -45,24 +46,30 @@ class TxtContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testWildcardRecordShouldAcceptedLastly()
     {
-        $expected_useragent = 'Googlebot';
-
         $record1 = new Record();
         $record1->append($this->makeLine('User-agent', '*'));
         $record1->append($this->makeLine('disallow', '/foo/bar/'));
 
 
         $record2 = new Record();
-        $record2->append($this->makeLine('User-agent', $expected_useragent));
+        $record2->append($this->makeLine('User-agent', 'foo'));
         $record2->append($this->makeLine('disallow', '/test/'));
 
-        $txt = new TxtContainer(array($record1, $record2));
+        $record3 = new Record();
+        $record3->append($this->makeLine('User-agent', 'bar'));
+        $record3->append($this->makeLine('disallow', '/test/'));
+
+
+        $txt = new TxtContainer(array($record1, $record2, $record3));
         /** @var Record $record */
         $record = $txt->current();
         $this->assertInstanceOf('Diggin\\RobotRules\\Rules\Txt\\LineEntity', $record['user-agent'][0]);
 
-        // @todo
-        // $this->assertEquals($expected_useragent, $record['user-agent']);
+        $records = iterator_to_array($txt);
+        end($records);
+        $lines = current($records)['user-agent'];
+        $line = current($lines);
+        $this->assertEquals('*', $line->getValue());
     }
 
     protected function makeLine($field, $value)

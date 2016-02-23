@@ -2,20 +2,40 @@
 
 namespace Diggin\RobotRules\Rules;
 
+use Diggin\RobotRules\Rules\Txt\LineEntity;
 use Diggin\RobotRules\Rules\Txt\RecordEntity;
 use Iterator;
 
 class TxtContainer implements Iterator, Txt
 {
     private $records;
-    private $position = 0;
-    
+
     /**
      * @param array
      */
     public function __construct($records)
     {
-        $this->records = $records;
+        $doublyLinkedList = new \SplDoublyLinkedList();
+        foreach($records as $record) {
+            if ($this->hasWildCard($record)) {
+                $doublyLinkedList->push($record);
+            } else {
+                $doublyLinkedList->unshift($record);
+            }
+        }
+
+        $doublyLinkedList->rewind();
+
+        $this->records = $doublyLinkedList;
+    }
+
+    public function add(RecordEntity $record)
+    {
+        if ($this->hasWildCard($record)) {
+            $this->records->push($record);
+        } else {
+            $this->records->unshift($record);
+        }
     }
 
     /**
@@ -23,29 +43,43 @@ class TxtContainer implements Iterator, Txt
      */
     public function current()
     {
-        return current($this->records);
+        return $this->records->current();
     }
 
     public function next()
     {
-        next($this->records);
-        $this->position++;
+        $this->records->next();
     }
 
     public function valid()
     {
-        return $this->position < count($this->records);
+        return $this->records->valid();
     }
 
     public function key()
     {
-        return key($this->records);
+        return $this->records->key();
     }
 
     public function rewind()
     {
-        reset($this->records);
-        $this->position = 0;
+        $this->records->rewind();
+    }
+
+    protected function hasWildCard(RecordEntity $record)
+    {
+        $flag = false;
+        if ($record->offsetExists('user-agent')) {
+            /** @var LineEntity $line */
+            foreach ($record->offsetGet('user-agent') as $line) {
+                if ('*' === $line->getValue()) {
+                    $flag = true;
+                    break;
+                }
+            }
+        }
+
+        return $flag;
     }
 
 }

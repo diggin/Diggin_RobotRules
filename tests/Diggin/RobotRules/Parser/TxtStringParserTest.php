@@ -3,6 +3,8 @@ namespace DigginTests\RobotRules\Parser;
 
 use Diggin\RobotRules\Parser\TxtStringParser;
 use Diggin\RobotRules\Rules\Txt\LineEntity as Line;
+use Diggin\RobotRules\Rules\Txt\LineEntity;
+use Diggin\RobotRules\Rules\Txt\RecordEntity;
 use Diggin\RobotRules\Rules\Txt\SpecifiedFieldValueIterator;
 
 class TxtStringParserTest extends \PHPUnit_Framework_TestCase
@@ -61,10 +63,12 @@ EOF;
 
         $txtContainer = TxtStringParser::parse($txt);
 
-        //var_dump($txtContainer);
+        /** @var RecordEntity $record */
+        $record= $txtContainer->current();
 
-        foreach (SpecifiedFieldValueIterator::factory($txtContainer, 'Sitemap') as $v) {
-            $this->assertRegExp('#http#', $v);
+        /** @var LineEntity $v */
+        foreach ($record->offsetGet('sitemap') as $v) {
+            $this->assertRegExp('#http#', $v->toString());
         }
 
 
@@ -76,8 +80,10 @@ Sitemap: http://example.com/sitemap.xml
 EOF;
 
         $txtContainer = TxtStringParser::parse($txt);
-        $sfvi = SpecifiedFieldValueIterator::factory($txtContainer, 'Sitemap');
-        $this->assertRegExp('#http#', $sfvi->current());
+
+        $lines = $txtContainer->current()->offsetGet('sitemap');
+
+        $this->assertRegExp('#http#',$lines[0]->getValue());
 
 $txt = <<<EOF
 # comment
@@ -85,8 +91,10 @@ Sitemap: http://example.com/sitemap.xml
 EOF;
 
         $txtContainer = TxtStringParser::parse($txt);
-        $sfvi = SpecifiedFieldValueIterator::factory($txtContainer, 'Sitemap');
-        $this->assertRegExp('#http#', $sfvi->current());
+
+        $lines = $txtContainer->current()->offsetGet('sitemap');
+
+        $this->assertRegExp('#http#', $lines[0]->getValue());
 
 
     }
