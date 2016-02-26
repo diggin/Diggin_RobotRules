@@ -2,50 +2,63 @@
 
 namespace Diggin\RobotRules\Rules;
 
+use AppendIterator;
+use SplDoublyLinkedList;
+use Diggin\RobotRules\Rules\Txt\LineEntity;
 use Diggin\RobotRules\Rules\Txt\RecordEntity;
-use Iterator;
 
-class TxtContainer implements Iterator, Txt
+class TxtContainer extends AppendIterator implements Txt
 {
-    private $records;
-    private $position = 0;
-    
-    /**
-     * @param array
-     */
-    public function __construct($records)
+    private $nonGroupMemberRecords;
+
+    public static function factory(array $records = array(), array $nonGroupMemberRecords = array())
     {
-        $this->records = $records;
+        $nonWildCardRecords = new SplDoublyLinkedList();
+        $wildCardRecords = new SplDoublyLinkedList();
+
+        foreach($records as $record) {
+            if (static::hasWildCardUserAgent($record)) {
+                $wildCardRecords->push($record);
+            } else {
+                $nonWildCardRecords->push($record);
+            }
+        }
+
+        $groupMemberRecords = new static();
+        $groupMemberRecords->append($nonWildCardRecords);
+        $groupMemberRecords->append($wildCardRecords);
+
+        $groupMemberRecords->rewind();
+        $groupMemberRecords->setNonGroupMemberRecords($nonGroupMemberRecords);
+
+        return $groupMemberRecords;
     }
 
-    /**
-     * @return RecordEntity
-     */
-    public function current()
+    public function setNonGroupMemberRecords($nonGroupMemberRecords)
     {
-        return current($this->records);
+        $this->nonGroupMemberRecords = $nonGroupMemberRecords;
     }
 
-    public function next()
+    public function getNonGroupMemberRecord($key)
     {
-        next($this->records);
-        $this->position++;
+        if (isset($this->nonGroupMemberRecords[$key])) {
+            return $this->nonGroupMemberRecords[$key];
+        }
     }
 
-    public function valid()
+    protected static function hasWildCardUserAgent(RecordEntity $record)
     {
-        return $this->position < count($this->records);
-    }
+        $flag = false;
+        if ($record->offsetExists('user-agent')) {
+            /** @var LineEntity $line */
+            foreach ($record->offsetGet('user-agent') as $line) {
+                if ('*' === $line->getValue()) {
+                    $flag = true;
+                    break;
+                }
+            }
+        }
 
-    public function key()
-    {
-        return key($this->records);
+        return $flag;
     }
-
-    public function rewind()
-    {
-        reset($this->records);
-        $this->position = 0;
-    }
-
 }
