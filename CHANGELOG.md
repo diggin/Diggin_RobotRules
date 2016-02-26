@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.10.0 - TBD
+## 0.10.0 - 2016-02-24
 
 ### Fixed
 - [#9](https://github.com/diggin/Diggin_RobotRules/issues/9) User-agent: * is expected to be accepted lastly [#16](https://github.com/diggin/Diggin_RobotRules/pull/16)

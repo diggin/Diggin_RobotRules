@@ -19,6 +19,12 @@
     "require":{
         "php":">=5.3.4"
     },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.10-dev",
+            "dev-develop": "0.11-dev"
+        }
+    },
     "require-dev": {
         "zendframework/zend-uri": "~2.3",
         "phpunit/phpunit": "~4.8",
