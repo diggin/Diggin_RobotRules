@@ -2,71 +2,51 @@
 
 namespace Diggin\RobotRules\Rules;
 
+use AppendIterator;
+use SplDoublyLinkedList;
 use Diggin\RobotRules\Rules\Txt\LineEntity;
 use Diggin\RobotRules\Rules\Txt\RecordEntity;
-use Iterator;
 
-class TxtContainer implements Iterator, Txt
+class TxtContainer extends AppendIterator implements Txt
 {
-    private $records;
+    private $nonGroupMemberRecords;
 
-    /**
-     * @param array
-     */
-    public function __construct($records)
+    public static function factory(array $records = array(), array $nonGroupMemberRecords = array())
     {
-        $doublyLinkedList = new \SplDoublyLinkedList();
+        $nonWildCardRecords = new SplDoublyLinkedList();
+        $wildCardRecords = new SplDoublyLinkedList();
+
         foreach($records as $record) {
-            if ($this->hasWildCard($record)) {
-                $doublyLinkedList->push($record);
+            if (static::hasWildCardUserAgent($record)) {
+                $wildCardRecords->push($record);
             } else {
-                $doublyLinkedList->unshift($record);
+                $nonWildCardRecords->push($record);
             }
         }
 
-        $doublyLinkedList->rewind();
+        $groupMemberRecords = new static();
+        $groupMemberRecords->append($nonWildCardRecords);
+        $groupMemberRecords->append($wildCardRecords);
 
-        $this->records = $doublyLinkedList;
+        $groupMemberRecords->rewind();
+        $groupMemberRecords->setNonGroupMemberRecords($nonGroupMemberRecords);
+
+        return $groupMemberRecords;
     }
 
-    public function add(RecordEntity $record)
+    public function setNonGroupMemberRecords($nonGroupMemberRecords)
     {
-        if ($this->hasWildCard($record)) {
-            $this->records->push($record);
-        } else {
-            $this->records->unshift($record);
+        $this->nonGroupMemberRecords = $nonGroupMemberRecords;
+    }
+
+    public function getNonGroupMemberRecord($key)
+    {
+        if (isset($this->nonGroupMemberRecords[$key])) {
+            return $this->nonGroupMemberRecords[$key];
         }
     }
 
-    /**
-     * @return RecordEntity
-     */
-    public function current()
-    {
-        return $this->records->current();
-    }
-
-    public function next()
-    {
-        $this->records->next();
-    }
-
-    public function valid()
-    {
-        return $this->records->valid();
-    }
-
-    public function key()
-    {
-        return $this->records->key();
-    }
-
-    public function rewind()
-    {
-        $this->records->rewind();
-    }
-
-    protected function hasWildCard(RecordEntity $record)
+    protected static function hasWildCardUserAgent(RecordEntity $record)
     {
         $flag = false;
         if ($record->offsetExists('user-agent')) {
@@ -81,5 +61,4 @@ class TxtContainer implements Iterator, Txt
 
         return $flag;
     }
-
 }

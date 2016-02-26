@@ -8,7 +8,7 @@ class TxtContainerTest extends \PHPUnit_Framework_TestCase
 {
     public function testStandardSet()
     {
-        $txt = new TxtContainer(array());
+        $txt = TxtContainer::factory();
         $this->assertNull($txt->current());
 
         $lineAgent = new Line;
@@ -22,8 +22,7 @@ class TxtContainerTest extends \PHPUnit_Framework_TestCase
         $record->append($lineAgent);
         $record->append($lineDisallow);
 
-        $txt = new TxtContainer(array($record));
-
+        $txt = TxtContainer::factory(array($record));
         $this->assertInstanceof('\\Diggin\\RobotRules\\Rules\\Txt\\RecordEntity', $txt->current());
 
         $record2 = new Record;
@@ -34,7 +33,7 @@ class TxtContainerTest extends \PHPUnit_Framework_TestCase
         $lineDisallow1->setValue('/test1');
         $record2->append($lineDisallow1);
 
-        $txt = new TxtContainer(array($record2, $record));
+        $txt = TxtContainer::factory(array($record, $record2));
 
         foreach ($txt as $key => $record) {
             $this->assertInstanceof('\\Diggin\\RobotRules\\Rules\\Txt\\RecordEntity', $record);
@@ -60,12 +59,13 @@ class TxtContainerTest extends \PHPUnit_Framework_TestCase
         $record3->append($this->makeLine('disallow', '/test/'));
 
 
-        $txt = new TxtContainer(array($record1, $record2, $record3));
+        $txt = TxtContainer::factory(array($record1, $record2, $record3));
         /** @var Record $record */
         $record = $txt->current();
         $this->assertInstanceOf('Diggin\\RobotRules\\Rules\Txt\\LineEntity', $record['user-agent'][0]);
 
-        $records = iterator_to_array($txt);
+        $records = iterator_to_array($txt,false);
+
         end($records);
         $record = current($records);
         $lines = $record['user-agent'];

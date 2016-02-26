@@ -34,7 +34,7 @@ class TxtStringParser
     public static function parse($robotstxt, $config = null)
     {
         if (!preg_match('!\w\s*:!s', $robotstxt)) {
-            return new TxtContainer(array());
+            return TxtContainer::factory(array());
         }
 
         $static = new static($config);
@@ -44,7 +44,8 @@ class TxtStringParser
         $records = array();
         $lineno = 0;
         $previous_line = false;
-        
+        $nonGroupRecords = array();
+
         do {
             
             $line = $static->parseLine($robotstxts[$lineno]);
@@ -81,8 +82,9 @@ class TxtStringParser
                     if (!isset($record)) $record = new Record;
                     $record->append($line);
                 } else {
-                    if (!isset($sitemap_record)) $sitemap_record = new Record;
-                    $sitemap_record->append($line);
+                    if (!isset($nonGroupRecords['sitemap'])) {
+                        $nonGroupRecords['sitemap'][] = $line;
+                    }
                 }
             }
             
@@ -91,9 +93,8 @@ class TxtStringParser
         
         // push last record
         if (isset($record)) $records[] = $record;
-        if (isset($sitemap_record)) $records[] = $sitemap_record;
-        
-        return new TxtContainer($records);
+
+        return TxtContainer::factory($records, $nonGroupRecords);
     }
     
     /**
